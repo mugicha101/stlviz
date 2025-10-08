@@ -1,21 +1,13 @@
 #include <SFML/Graphics.hpp>
+#include <stlviz.hpp>
+#include <thread>
+#include <iostream>
 
-int main()
-{
-    auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
-    window.setFramerateLimit(144);
+using namespace std::chrono_literals;
 
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-            {
-                window.close();
-            }
-        }
+// debug program
 
-        window.clear();
-        window.display();
-    }
+int main() {
+    vstd::vector<int> vec;
+    std::this_thread::sleep_for(100s);
 }
