@@ -34,8 +34,7 @@ Example use in another program's CMakeLists.txt:
 
 ```
 find_package(stlviz)
-target_compile_definitions(app PRIVATE STLVIZ_ENABLED=1)
+target_compile_definitions(app PRIVATE)
 target_link_libraries(app PRIVATE vstd)
 ```
 
-Note: `STLVIZ_ENABLED=0` will disable visualization and cause the program to run normally.
