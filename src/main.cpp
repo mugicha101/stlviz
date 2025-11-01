@@ -9,8 +9,6 @@ using namespace std::chrono_literals;
 // debug program
 
 int main() {
-  vstd::vector<int> vec;
-  vec.push_back(0);
-  vcore::controller.spin();
+  vstd::vector<int> vec(3, 8);
   std::cout << vobj::Display::displays.size() << std::endl;
 }

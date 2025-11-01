@@ -50,7 +50,11 @@ set(STLVIZ_ENABLED 1)
 
 file(GLOB_RECURSE CPP_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 add_library(stlviz STATIC ${CPP_SOURCES})
-target_compile_definitions(stlviz PRIVATE STLVIZ_ENABLED=$<BOOL:${STLVIZ_ENABLED}>)
+target_compile_definitions(stlviz
+    PRIVATE
+        STLVIZ_ENABLED=$<BOOL:${STLVIZ_ENABLED}>
+        STLVIZ_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets"
+)
 target_include_directories(stlviz
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -85,6 +89,7 @@ install(TARGETS stlviz
     INCLUDES DESTINATION include
 )
 install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY assets/ DESTINATION assets)
 
 install(EXPORT stlviz
     FILE stlviz.cmake

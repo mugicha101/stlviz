@@ -9,6 +9,7 @@ namespace vcore {
 
   void View::update() {
     window.clear(sf::Color::Red);
+    vobj::Display::drawAll(window);
     window.display();
   }
 }

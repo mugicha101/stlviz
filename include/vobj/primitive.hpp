@@ -2,6 +2,7 @@
 
 #include "vobj/display.hpp"
 #include <iostream>
+#include <string>
 
 namespace vobj {
   // backing class of primitive values
@@ -30,8 +31,14 @@ public:
       return false;
     }
 
-    void draw(sf::RenderTarget &c, sf::Transform t) override {
-      // UNKNOWN PRIMITIVE (might be user struct)
+    void draw() override {
+      resetCanvas(32, 32);
+      sf::Text text(Display::getFont());
+      text.setString(std::to_string(value));
+      text.setCharacterSize(32);
+      text.setFillColor(sf::Color::Black);
+      canvas.draw(text);
+      canvas.display();
     };
   };
 }

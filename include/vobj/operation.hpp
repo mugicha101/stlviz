@@ -15,12 +15,15 @@ namespace vobj {
 
   // represents a single operation at a line number and offset
   struct Operation : public Display {
+    size_t oid; // operation unique id
     uint64_t line;
     uint64_t offset;
-    std::string content;
+    std::string content; // text description of operation
     std::vector<std::unique_ptr<OpComp>> comps; // represent components of operation applied in order
-    Operation(uint64_t line = 0, uint64_t offset = 0, std::string content = "");
-    void draw(sf::RenderTarget &c, sf::Transform t) override;
+
+    Operation(size_t oid = 0, uint64_t line = 0, uint64_t offset = 0, std::string content = "");
+
+    void draw() override;
     void apply();
     void undo();
   };

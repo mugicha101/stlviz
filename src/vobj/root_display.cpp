@@ -6,8 +6,4 @@ namespace vobj {
   RootDisplay::RootDisplay() {
 
   }
-
-  void RootDisplay::draw(sf::RenderTarget &c, sf::Transform t) {
-    // TODO
-  }
 }

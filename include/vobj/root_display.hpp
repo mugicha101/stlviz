@@ -3,7 +3,8 @@
 #include "vobj/display.hpp"
 
 namespace vobj {
-  // singleton root display, holds all other displays
+  // singleton root display, holds all displays not within another display
+  // TODO: actually use this rather than drawing all separately
   struct RootDisplay : public Display {
   protected:
 
@@ -12,7 +13,5 @@ namespace vobj {
     FRIEND_CREATE
 
   public:
-
-    void draw(sf::RenderTarget &c, sf::Transform t) override;
   };
 }
