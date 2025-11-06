@@ -77,26 +77,61 @@ namespace vobj {
   public:
 
     void draw() override {
+      const int cellPadding = 5;
+      const int cellBorder = 2;
+
+      if (elements.empty()) {
+        // draw empty set symbol
+        const int SIZE = 50;
+        resetCanvas(SIZE, SIZE);
+        
+        const float R = (float)SIZE * 0.4f;
+        const float W = R * 0.3f;
+        sf::CircleShape circle(R);
+        circle.setOutlineThickness(-W);
+        circle.setOutlineColor(sf::Color::Black);
+        circle.setFillColor(sf::Color::Transparent);
+        circle.setOrigin({R, R});
+        circle.setPosition({(float)SIZE * 0.5f, (float)SIZE * 0.5f});
+        canvas.draw(circle);
+
+        sf::RectangleShape line({(float)SIZE * 1.2f, W});
+        line.setOrigin({line.getSize().x * 0.5f, line.getSize().y * 0.5f});
+        line.setPosition({(float)SIZE * 0.5f, (float)SIZE * 0.5f});
+        line.setRotation(sf::degrees(-45));
+        line.setFillColor(sf::Color::Black);
+        canvas.draw(line);
+
+        canvas.display();
+        return;
+      }
+
       int height = 0;
-      int width = 0;
+      int width = cellBorder;
       for (auto &[i, e] : elements) {
-        bbox = e->getBBox();
-        width += bbox.size.x;
+        auto bbox = e->getBBox();
+        width += bbox.size.x + cellPadding * 2 + cellBorder;
         height = std::max(height, bbox.size.y);
       }
 
-      const int cellBorder = 5;
-      height += cellBorder * 2;
+      int margin = (cellBorder + cellPadding) * 2;
+      height += margin;
 
       resetCanvas(width, height);
-      int x = 0;
+
+      int x = cellBorder;
       for (auto &[i, e] : elements) {
-        bbox = e->getBBox();
-        e->drawOn(canvas, (float)x, (float)(height - bbox.size.y) * 0.5f);
-        x += bbox.size.x;
+        auto bbox = e->getBBox();
+        e->drawOn(canvas, (float)(x + cellPadding), (float)(height - bbox.size.y) * 0.5f);
+        sf::RectangleShape rect({(float)(bbox.size.x + cellPadding * 2), (float)(height - cellBorder * 2)});
+        rect.setPosition({(float)x, (float)cellBorder});
+        rect.setOutlineThickness(cellBorder);
+        rect.setOutlineColor(sf::Color::Black);
+        rect.setFillColor(sf::Color::Transparent);
+        canvas.draw(rect);
+
+        x += bbox.size.x + cellPadding * 2 + cellBorder;
       }
-      sf::RectangleShape rect({50.f, 150.f});
-      rect.setFillColor(sf::Color(0, 0, 255));
       canvas.display();
     };
 
