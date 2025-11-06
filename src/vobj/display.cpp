@@ -31,10 +31,10 @@ namespace vobj {
     return updated = o && o->_vstd_update_values(op);
   }
 
-  void Display::drawOn(sf::RenderTarget &t, int x, int y) {
+  void Display::drawOn(sf::RenderTarget &t, float x, float y) {
     // TODO: figure out why setTextureRect behaves weird
     sf::Sprite sprite(getTexture());
-    sprite.setPosition({(float)x, (float)y});
+    sprite.setPosition({x, y});
     t.draw(sprite);
   }
 

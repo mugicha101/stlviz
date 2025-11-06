@@ -10,7 +10,7 @@ namespace vcore {
   void View::update(std::shared_ptr<vobj::Display> root) {
     ++vobj::Display::globalDrawTick;
     window.clear(sf::Color(200, 200, 255));
-    root->drawOn(window, 0, 0);
+    root->drawOn(window, 0.f, 0.f);
     window.display();
   }
 }

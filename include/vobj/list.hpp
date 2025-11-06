@@ -85,11 +85,14 @@ namespace vobj {
         height = std::max(height, bbox.size.y);
       }
 
+      const int cellBorder = 5;
+      height += cellBorder * 2;
+
       resetCanvas(width, height);
       int x = 0;
       for (auto &[i, e] : elements) {
         bbox = e->getBBox();
-        e->drawOn(canvas, x, (height - bbox.size.y) >> 1);
+        e->drawOn(canvas, (float)x, (float)(height - bbox.size.y) * 0.5f);
         x += bbox.size.x;
       }
       sf::RectangleShape rect({50.f, 150.f});

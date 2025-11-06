@@ -22,16 +22,16 @@ namespace vobj {
       text.setString(d->name + ": ");
       text.setCharacterSize(FONT_SIZE);
       float charWidth = font.getGlyph('0', FONT_SIZE, false).advance;
-      uint32_t nameWidth = (uint32_t)std::ceil(charWidth * (float)text.getString().getSize());
-      uint32_t nameHeight = font.getLineSpacing(FONT_SIZE);
+      float nameWidth = charWidth * (float)text.getString().getSize();
+      float nameHeight = (float)font.getLineSpacing(FONT_SIZE);
       text.setFillColor(sf::Color::Black);
       text.setPosition({0.f, (float)y + (float)bbox.size.y * 0.5f});
-      text.setOrigin({0.f, (float)nameHeight * 0.5f});
+      text.setOrigin({0.f, nameHeight * 0.5f});
       canvas.draw(text);
       canvas.display();
 
       // draw display
-      d->drawOn(canvas, nameWidth, y);
+      d->drawOn(canvas, nameWidth, (float)y);
       y += bbox.size.y;
     }
     canvas.display();

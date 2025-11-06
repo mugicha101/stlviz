@@ -78,7 +78,7 @@ namespace vobj {
 
     // draw canvas on another target
     // calls draw if not drawn this tick
-    void drawOn(sf::RenderTarget &t, int x, int y);
+    void drawOn(sf::RenderTarget &t, float x, float y);
     
     // compares value with mapped vstd class instance, if value changed since last update, adds value change to op and returns true
     // relies on vstd::base::_vstd_update_values() to do all the heavy lifting since raw type is unknown here
