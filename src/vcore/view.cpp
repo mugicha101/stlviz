@@ -7,9 +7,10 @@ namespace vcore {
     window.setFramerateLimit(60);
   }
 
-  void View::update() {
-    window.clear(sf::Color::Red);
-    vobj::Display::drawAll(window);
+  void View::update(std::shared_ptr<vobj::Display> root) {
+    ++vobj::Display::globalDrawTick;
+    window.clear(sf::Color(200, 200, 255));
+    root->drawOn(window, 0, 0);
     window.display();
   }
 }

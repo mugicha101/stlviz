@@ -11,6 +11,6 @@ namespace vcore {
 
     View(uint32_t width = 0, uint32_t height = 0);
 
-    void update();
+    void update(std::shared_ptr<vobj::Display> root);
   };
 }

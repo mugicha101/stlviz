@@ -2,14 +2,19 @@
 #include <iostream>
 
 namespace vobj {
-  Operation::Operation(size_t oid, uint64_t line, uint64_t offset, std::string content) : Display(), oid(oid), line(line), offset(offset), content(content) {
+  Operation::Operation() : Operation(0, 0, 0, "") {
+    
+  }
+
+  Operation::Operation(size_t oid, uint64_t line, uint64_t offset, std::string content) : Operation(oid, line, offset, line, offset, content) {
+    
+  }
+
+  Operation::Operation(size_t oid, uint64_t startLine, uint64_t startOffset, uint64_t endLine, uint64_t endOffset, std::string content) : Display(), oid(oid), startLine(startLine), startOffset(startOffset), endLine(endLine), endOffset(endOffset), content(content) {
     
   }
 
   void Operation::draw() {
-    if (localTick == globalTick) return;
-    localTick = globalTick;
-
     for (auto &comp : comps) {
       comp->draw();
     }

@@ -6,14 +6,18 @@
 
 namespace vcore {
   struct Model {
-    // std::shared_ptr<vobj::RootDisplay> root = vobj::create<vobj::RootDisplay>();
+    std::shared_ptr<vobj::RootDisplay> root = vobj::create<vobj::RootDisplay>();
     std::deque<vobj::Operation> ops;
+    uint64_t lastUpdateLine = 0;
+    uint64_t lastUpdateOffset = 0;
+    
     Model();
 
     // add op
     vobj::Operation &addOp(std::source_location sloc, std::string content);
 
     // update all vobjs to check for changed values
-    void update();
+    // if values changed, add operation with these value changes
+    void update(std::source_location sloc);
   };
 }

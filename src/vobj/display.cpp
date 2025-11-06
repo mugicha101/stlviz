@@ -5,16 +5,17 @@
 
 namespace vobj {
   std::deque<std::shared_ptr<Display>> Display::displays;
-  uint64_t Display::globalTick;
+  uint64_t Display::globalDrawTick;
+  uint64_t Display::globalUpdateTick;
 
-  Display::Display() : localTick(globalTick), canvas({32u, 32u}) {}
+  Display::Display() : localDrawTick(globalDrawTick), localUpdateTick(globalUpdateTick), canvas({32u, 32u}) {}
 
   sf::Font &Display::getFont() {
     static sf::Font font;
     static bool fontLoaded = false;
     if (!fontLoaded) {
       fontLoaded = true;
-      const std::string path = std::string() + STLVIZ_ASSETS_DIR + "/Cascadia_Code/CascadiaCode-VariableFont_wght.ttf";
+      const std::string path = std::string() + STLVIZ_ASSETS_DIR + "/Cascadia_Mono/CascadiaMono-VariableFont_wght.ttf";
       if (!font.openFromFile(path)) {
         std::cout << "FAILED TO LOAD FONT FROM PATH " << path << std::endl;
       }
@@ -23,7 +24,10 @@ namespace vobj {
   }
 
   bool Display::update(Operation &op) {
-    return o && o->_vstd_update_values(op);
+    if (localUpdateTick == globalUpdateTick) return updated;
+    localUpdateTick = globalUpdateTick;
+    if (!o) std::cout << "WARNING: " << uid << " has no vstd object to update" << std::endl;
+    return updated = o && o->_vstd_update_values(op);
   }
 
   void Display::drawOn(sf::RenderTarget &t, int x, int y) {
@@ -34,8 +38,8 @@ namespace vobj {
   }
 
   const sf::Texture &Display::getTexture() {
-    if (localTick != globalTick) {
-      localTick = globalTick;
+    if (localDrawTick != globalDrawTick) {
+      localDrawTick = globalDrawTick;
       draw();
     }
 
@@ -43,21 +47,12 @@ namespace vobj {
   }
 
   sf::IntRect Display::getBBox() {
-    if (localTick != globalTick) {
-      localTick = globalTick;
+    if (localDrawTick != globalDrawTick) {
+      localDrawTick = globalDrawTick;
       draw();
     }
 
     return bbox;
-  }
-
-  void Display::drawAll(sf::RenderTarget &c) {
-    ++globalTick;
-    for (std::shared_ptr<Display> d : displays) {
-      if (d->parent || !d->alive) continue;
-
-      d->drawOn(c, 0, 0);
-    }
   }
 
   void Display::resetCanvas(uint32_t width, uint32_t height) {

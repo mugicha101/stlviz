@@ -8,6 +8,9 @@
 #define CONTROLLER vcore::controller
 #define MODEL vcore::controller.model
 #define VIEW vcore::controller.view
+#define SPIN vcore::controller.spin();
+#define UPDATE vcore::controller.update(sloc);
+#define OP(content, body) vobj::Operation &op = MODEL.addOp(sloc, content); UPDATE body; SPIN
 
 #define FRIEND_CREATE template<typename T, typename... Args> friend std::shared_ptr<T> create(Args&&... args);
 
@@ -21,31 +24,30 @@ namespace vobj {
   // represent an object to be displayed on the ui, should not use copy/move constructors (use shared_ptr to pass around)
   // since operation can be reverse, once created should never be destroyed during lifetime of program
   // all values should be updated only by the operation
-  struct Display {
+  struct Display : public std::enable_shared_from_this<Display> {
     // stores all displays with index being uid
     static std::deque<std::shared_ptr<Display>> displays;
     
     static sf::Font &getFont();
 
-    static uint64_t globalTick; // the current draw tick to allow rendering mark an object as drawn this tick
+    static uint64_t globalDrawTick; // the current draw tick to allow rendering mark an object as drawn this tick (incremented by View)
+    static uint64_t globalUpdateTick; // the current update tick to allow updating mark an object as updated this tick (incremented by Model)
+    bool updated = false; // cached result of this tick's update call
 
-    // render all displays onto c
-    // each call to this represents a tick (increments globalTick)
-    static void drawAll(sf::RenderTarget &c);
-    
     size_t uid = SIZE_MAX;
 
     sf::RenderTexture canvas; // sfml canvas that caches this object's drawing (parents can use it)
     
     sf::IntRect bbox; // bounding box in canvas (so don't have to draw entire canvas)
 
-    std::shared_ptr<vstd::base> o; // pointer to vstd object this display represents, nullptr if none
+    vstd::base *o; // pointer to vstd object this display represents, nullptr if none (raw pointer due to vstd not being created as a smart ptr)
 
     std::shared_ptr<Display> parent; // pointer to parent display, nullptr if none
 
     bool alive = false; // true if the object is alive by the current operation's completion
 
-    uint64_t localTick = 0; // if localTick == globalTick this object has been rendered this tick
+    uint64_t localDrawTick = 0; // if matches globalDrawTick this object has been rendered this tick
+    uint64_t localUpdateTick = 0; // if matches globalUpdateTick this object has been updated this tick
 
   protected:
 

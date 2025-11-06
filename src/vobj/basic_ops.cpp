@@ -2,10 +2,12 @@
 
 namespace vobj {
   void ConstructOp::apply() {
+    std::cout << target->uid << " ALIVE" << std::endl;
     target->alive = true;
   }
 
   void ConstructOp::undo() {
+    std::cout << target->uid << " DEAD" << std::endl;
     target->alive = false;
   }
 
@@ -22,8 +24,10 @@ namespace vobj {
   }
   void MoveOp::apply() {
     target->parent = newParent;
+    std::cout << target->uid << " P " << (target->parent ? (int)target->parent->uid : -1) << std::endl;
   }
   void MoveOp::undo() {
     target->parent = oldParent;
+    std::cout << target->uid << " P " << (target->parent ? (int)target->parent->uid : -1) << std::endl;
   }
 }

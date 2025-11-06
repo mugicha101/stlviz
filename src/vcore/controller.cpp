@@ -6,7 +6,6 @@ namespace vcore {
   Controller::Controller() : view(800u, 600u) {}
 
   void Controller::spin() {
-    model.update();
     while (view.window.isOpen() && targetOp <= model.ops.size()) {
       while (const std::optional event = view.window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
@@ -39,8 +38,17 @@ namespace vcore {
         }
       }
 
-      view.update();
+      view.update(model.root);
     }
+
+    if (!view.window.isOpen()) {
+      std::cout << "WINDOW CLOSED" << std::endl;
+      exit(0);
+    }
+  }
+
+  void Controller::update(std::source_location sloc) {
+    model.update(sloc);
   }
 
   void Controller::step(long long amount) {

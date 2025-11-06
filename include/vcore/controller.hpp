@@ -14,6 +14,7 @@ namespace vcore {
     
     void step(long long amount);
     void spin(); // wait until next operation needed (handles sfml events while waiting)
+    void update(std::source_location sloc); // check for changed values
     void jump(size_t op);
   };
 

@@ -13,5 +13,13 @@ namespace vobj {
     FRIEND_CREATE
 
   public:
+
+    // draw all displays recursively
+    // each call to this represents a draw tick (increments globalDrawTick)
+    void draw() override;
+
+    // updates all displays recursively
+    // each call to this represents an update tick (increments globalUpdateTick)
+    bool update(Operation &op) override;
   };
 }

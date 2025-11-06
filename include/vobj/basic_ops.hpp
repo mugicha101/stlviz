@@ -22,9 +22,6 @@ namespace vobj {
     void undo() override;
   };
 
-  // modify an existing object, ex: change size or capacity of vector
-  struct MutOp : public OpComp {};
-
   // change parent of backing object
   struct MoveOp : public OpComp {
     std::shared_ptr<Display> target;
