@@ -1,11 +1,5 @@
-#include <SFML/Graphics.hpp>
 #include <stlviz.hpp>
-#include <vobj/primitive.hpp>
-#include <thread>
-#include <iostream>
 #include <numeric>
-
-using namespace std::chrono_literals;
 
 // debug program
 
