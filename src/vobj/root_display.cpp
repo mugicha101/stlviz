@@ -13,9 +13,25 @@ namespace vobj {
     int y = 0;
     for (std::shared_ptr<Display> d : Display::displays) {
       if (d->parent || !d->alive || d->uid == uid) continue;
-
+      
       bbox = d->getBBox();
-      d->drawOn(canvas, 0, 0);
+
+      // draw name
+      sf::Font &font = Display::getFont();
+      sf::Text text(font);
+      text.setString(d->name + ": ");
+      text.setCharacterSize(FONT_SIZE);
+      float charWidth = font.getGlyph('0', FONT_SIZE, false).advance;
+      uint32_t nameWidth = (uint32_t)std::ceil(charWidth * (float)text.getString().getSize());
+      uint32_t nameHeight = font.getLineSpacing(FONT_SIZE);
+      text.setFillColor(sf::Color::Black);
+      text.setPosition({0.f, (float)y + (float)bbox.size.y * 0.5f});
+      text.setOrigin({0.f, (float)nameHeight * 0.5f});
+      canvas.draw(text);
+      canvas.display();
+
+      // draw display
+      d->drawOn(canvas, nameWidth, y);
       y += bbox.size.y;
     }
     canvas.display();

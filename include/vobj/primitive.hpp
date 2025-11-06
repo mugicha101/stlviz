@@ -46,11 +46,10 @@ public:
       sf::Font &font = Display::getFont();
       sf::Text text(font);
       text.setString(std::to_string(value));
-      text.setCharacterSize(32);
-      const sf::Glyph& glyph = font.getGlyph('0', 32, false);
-      float glyphWidth = glyph.advance;
-      uint32_t width = (uint32_t)std::ceil(glyphWidth * (float)text.getString().getSize());
-      uint32_t height = font.getLineSpacing(32);
+      text.setCharacterSize(FONT_SIZE);
+      float charWidth = font.getGlyph('0', FONT_SIZE, false).advance;
+      uint32_t width = (uint32_t)std::ceil(charWidth * (float)text.getString().getSize());
+      uint32_t height = font.getLineSpacing(FONT_SIZE);
       resetCanvas(width, height);
       text.setFillColor(sf::Color::Black);
       canvas.draw(text);

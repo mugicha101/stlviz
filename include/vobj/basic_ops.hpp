@@ -3,13 +3,15 @@
 #include "vobj/operation.hpp"
 #include "vobj/backing_type.hpp"
 #include <iostream>
+#include <string>
 
 // define major operator component types
 namespace vobj {
   // create a new object
   struct ConstructOp : public OpComp {
     std::shared_ptr<Display> target;
-    ConstructOp(std::shared_ptr<Display> target) : target(target) {}
+    std::string defaultName;
+    ConstructOp(std::shared_ptr<Display> target, std::source_location sloc) : target(target), defaultName(std::to_string(sloc.line()) + ":" + std::to_string(sloc.column())) {}
     void apply() override;
     void undo() override;
   };
@@ -51,5 +53,18 @@ namespace vobj {
     void undo() override {
       target->value = oldValue;
     }
+  };
+
+  // rename an object
+  struct RenameOp : public OpComp {
+    std::shared_ptr<Display> target;
+    std::string oldName;
+    std::string newName;
+
+    RenameOp(std::shared_ptr<Display> target, std::string oldName, std::string newName) : target(target), oldName(oldName), newName(newName) {}
+
+    void apply() override;
+
+    void undo() override;
   };
 }

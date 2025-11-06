@@ -10,5 +10,10 @@ namespace vstd {
     virtual bool _vstd_update_values(vobj::Operation &op) = 0;
 
     friend struct vobj::Display;
+
+  public:
+
+    // give custom name to this object
+    virtual void _vstd_rename(std::string name, SLOC) = 0;
   };
 }

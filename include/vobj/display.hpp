@@ -11,6 +11,7 @@
 #define SPIN vcore::controller.spin();
 #define UPDATE vcore::controller.update(sloc);
 #define OP(content, body) vobj::Operation &op = MODEL.addOp(sloc, content); UPDATE body; SPIN
+#define FONT_SIZE 32
 
 #define FRIEND_CREATE template<typename T, typename... Args> friend std::shared_ptr<T> create(Args&&... args);
 
@@ -36,6 +37,8 @@ namespace vobj {
 
     size_t uid = SIZE_MAX;
 
+    std::string name; // name (set to init location by ConstructOp, can be modified with RenameOp)
+
     sf::RenderTexture canvas; // sfml canvas that caches this object's drawing (parents can use it)
     
     sf::IntRect bbox; // bounding box in canvas (so don't have to draw entire canvas)
@@ -57,6 +60,9 @@ namespace vobj {
     FRIEND_CREATE
 
   public:
+
+    // rename this display, should only be done when at latest operation
+    void rename(std::string name, std::source_location sloc);
 
     // clear canvas and resizes canvas to be at minimum this size
     // should be called at start of draw()

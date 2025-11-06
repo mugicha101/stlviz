@@ -8,7 +8,7 @@
 
 namespace vstd {
   template<typename T>
-  class vector : public std::vector<T>, public vstd::base {
+  class vector : public std::vector<T>, public base {
     using EBT = vobj::BackingType<T>::type;
     // using Allocator = std::allocator<T>; TODO: support custom allocators like std::vector does
     using iterator = typename std::vector<T>::iterator;
@@ -46,7 +46,7 @@ namespace vstd {
         bo = vobj::create<vobj::List<EBT>>();
         bo->o = (vstd::base *)this;
         std::cout << "BO UID " << bo->uid << " MAPPED TO VEC " << std::endl;
-        op.comps.push_back(std::make_unique<vobj::ConstructOp>(bo));
+        op.comps.push_back(std::make_unique<vobj::ConstructOp>(bo, sloc));
         for (size_t i = 0; i < size(); ++i) {
           // create backing element object and add init op
           std::shared_ptr<EBT> e = vobj::create<EBT>(std::vector<T>::at(i));
@@ -64,6 +64,12 @@ namespace vstd {
     }
 
   public:
+
+    void _vstd_rename(std::string name, SLOC) override {
+      OP("rename vector",
+        op.comps.push_back(std::make_unique<vobj::RenameOp>(bo, bo->name, name));
+      )
+    }
 
     vector(SLOC) : std::vector<T>() {
       init_helper(sloc);

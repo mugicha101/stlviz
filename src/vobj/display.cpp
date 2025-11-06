@@ -10,6 +10,7 @@ namespace vobj {
 
   Display::Display() : localDrawTick(globalDrawTick), localUpdateTick(globalUpdateTick), canvas({32u, 32u}) {}
 
+  // get mono font
   sf::Font &Display::getFont() {
     static sf::Font font;
     static bool fontLoaded = false;

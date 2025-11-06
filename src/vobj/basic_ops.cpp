@@ -4,11 +4,13 @@ namespace vobj {
   void ConstructOp::apply() {
     std::cout << target->uid << " ALIVE" << std::endl;
     target->alive = true;
+    target->name = defaultName;
   }
 
   void ConstructOp::undo() {
     std::cout << target->uid << " DEAD" << std::endl;
     target->alive = false;
+    target->name = "";
   }
 
   void DestroyOp::apply() {
@@ -29,5 +31,12 @@ namespace vobj {
   void MoveOp::undo() {
     target->parent = oldParent;
     std::cout << target->uid << " P " << (target->parent ? (int)target->parent->uid : -1) << std::endl;
+  }
+
+  void RenameOp::apply() {
+    target->name = newName;
+  }
+  void RenameOp::undo() {
+    target->name = oldName;
   }
 }

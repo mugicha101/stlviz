@@ -12,3 +12,6 @@ namespace vobj {
     using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
   };
 }
+
+// allow naming vstd objects to their variable name
+#define DEF(X) X._vstd_rename(#X)
