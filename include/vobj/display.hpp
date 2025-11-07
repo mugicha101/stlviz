@@ -13,7 +13,7 @@
 #define OP(content, body) UPDATE; vobj::Operation &op = MODEL.addOp(sloc, content); body; SPIN
 #define FONT_SIZE 32
 
-#define FRIEND_CREATE template<typename T, typename... Args> friend std::shared_ptr<T> create(Args&&... args);
+#define FRIEND_CREATE template<typename T_FRIEND, typename... Args> friend std::shared_ptr<T_FRIEND> create(Args&&... args);
 
 namespace vstd {
   class base;

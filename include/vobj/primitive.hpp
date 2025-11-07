@@ -3,6 +3,7 @@
 #include "vobj/display.hpp"
 #include <iostream>
 #include <string>
+#include <cmath>
 
 namespace vobj {
   template<typename T>
