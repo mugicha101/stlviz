@@ -1,9 +1,17 @@
 #include <vcore/controller.hpp>
 #include <iostream>
 #include <algorithm>
+#include <cstdlib>
 
 namespace vcore {
   Controller::Controller() : view(800u, 600u) {}
+  Controller::~Controller() {
+    std::cout << "EXIT UPDATE" << std::endl;
+    update(std::source_location::current());
+    std::cout << "EXIT SPIN " << std::endl;
+    spin();
+    std::cout << "EXIT DONE " << std::endl;
+  }
 
   void Controller::spin() {
     while (view.window.isOpen() && targetOp <= model.ops.size()) {

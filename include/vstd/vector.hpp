@@ -91,6 +91,16 @@ namespace vstd {
       init_helper(sloc);
     }
 
+    ~vector() {;
+      SLOC;
+      OP("vector destruction",
+        for (size_t i = 0; i < size(); ++i) {
+          bo->remove(op, i);
+        }
+        op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
+      )
+    }
+
     // since iterators can only update values, and vast majority of usecases use auto for type resolution, can just use iterator directly to std::vector
     iterator begin() { return std::vector<T>::begin(); }
     iterator end()   { return std::vector<T>::end(); }

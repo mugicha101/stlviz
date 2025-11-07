@@ -11,6 +11,7 @@ namespace vcore {
     size_t currOp = 0; // current state is right before this operation
     size_t targetOp = 0; // target state is right before this operation
     Controller();
+    ~Controller();
     
     void step(long long amount);
     void spin(); // wait until next operation needed (handles sfml events while waiting)

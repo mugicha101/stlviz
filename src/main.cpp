@@ -10,8 +10,10 @@ int main() {
   vec.push_back(10);
   std::iota(vec.begin(), vec.end(), 0);
   vec.pop_back();
-
-  vstd::vector<int> vec2;
-  DEF(vec2);
-  vec2.push_back(1);
+  vstd::vector<int> vec2(20);
+  for (int i = 0; i < vec2.size(); ++i) {
+    vec2[i] = rand() % 100;
+  }
+  vec2.push_back(0);
+  sort(vec2.begin(), vec2.end());
 }

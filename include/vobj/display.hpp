@@ -10,7 +10,7 @@
 #define VIEW vcore::controller.view
 #define SPIN vcore::controller.spin();
 #define UPDATE vcore::controller.update(sloc);
-#define OP(content, body) vobj::Operation &op = MODEL.addOp(sloc, content); UPDATE body; SPIN
+#define OP(content, body) UPDATE; vobj::Operation &op = MODEL.addOp(sloc, content); body; SPIN
 #define FONT_SIZE 32
 
 #define FRIEND_CREATE template<typename T, typename... Args> friend std::shared_ptr<T> create(Args&&... args);
