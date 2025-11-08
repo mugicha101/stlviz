@@ -2,6 +2,7 @@
 #include "vstd/base.hpp"
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 namespace vobj {
   std::deque<std::shared_ptr<Display>> Display::displays;

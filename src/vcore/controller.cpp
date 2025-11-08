@@ -1,7 +1,7 @@
 #include <vcore/controller.hpp>
 #include <iostream>
 #include <algorithm>
-#include <cstdlib>
+#include <cmath>
 
 namespace vcore {
   Controller::Controller() : view(800u, 600u) {}
