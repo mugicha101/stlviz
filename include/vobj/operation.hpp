@@ -11,6 +11,7 @@ namespace vobj {
   struct OpComp : public Display {
     virtual void apply() = 0;
     virtual void undo() = 0;
+    virtual ~OpComp() = default;
   };
 
   // represents a single operation at a line number and offset

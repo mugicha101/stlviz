@@ -57,6 +57,8 @@ namespace vobj {
     // hide constructor so forced to use create
     Display();
 
+    virtual ~Display() = default;
+
     FRIEND_CREATE
 
   public:
