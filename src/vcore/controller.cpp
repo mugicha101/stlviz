@@ -69,7 +69,7 @@ namespace vcore {
   }
 
   void Controller::jump(size_t op) {
-    targetOp = std::max(0ULL, op);
+    targetOp = std::max((size_t)0, op);
   }
 
   Controller controller;
