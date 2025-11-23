@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vobj/root_display.hpp"
 #include <iostream>
 
