@@ -10,9 +10,13 @@ namespace vcore {
 
   struct View {
     sf::RenderWindow window;
+    uint32_t opListX = 0u; // x position of operation list
+    float opListYOff = 0.f; // vertical offset of operation list scrolling
 
     View(uint32_t width = 0, uint32_t height = 0);
+    View(sf::Vector2u size) : View(size.x, size.y) {}
 
     void update(std::shared_ptr<vobj::Display> root, std::deque<vobj::Operation> &ops, size_t currOp);
+    int opListHover(float mouseX, float mouseY) const;
   };
 }

@@ -4,11 +4,24 @@
 #include <cmath>
 
 namespace vcore {
-  Controller::Controller() : view(800u, 600u) {}
+  Controller::Controller() : view(sf::VideoMode::getDesktopMode().size / 2u) {
+    view.window.setFramerateLimit(60);
+  }
   Controller::~Controller() {
   }
 
   void Controller::spin() {
+    auto updateCurrOp = [this]() {
+      // step currOp towards targetOp
+      while (currOp != targetOp && !(currOp == model.ops.size() && targetOp > model.ops.size())) {
+        if (currOp < targetOp) {
+          model.ops[currOp++].apply();
+        } else {
+          model.ops[--currOp].undo();
+        }
+      }
+    };
+    updateCurrOp();
     while (view.window.isOpen() && targetOp <= model.ops.size()) {
       while (const std::optional event = view.window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
@@ -33,18 +46,24 @@ namespace vcore {
             // update the view to the new size of the window
             sf::FloatRect visibleArea(sf::Vector2f{0.f, 0.f}, sf::Vector2f{(float)resize->size.x, (float)resize->size.y});
             view.window.setView(sf::View(visibleArea));
+        } else if (const auto *mouseMoved = event->getIf<sf::Event::MouseMoved>()) {
+          mouseMove((float)mouseMoved->position.x, (float)mouseMoved->position.y);
+        } else if (const auto *mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+          if (mouseButtonPressed->button == sf::Mouse::Button::Left) mouseDown();
+        } else if (const auto *mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
+          if (mouseButtonReleased->button == sf::Mouse::Button::Left) mouseUp();
+        } else if (const auto *mouseScrolled = event->getIf<sf::Event::MouseWheelScrolled>()) {
+          static float delta = 0.f;
+          delta += mouseScrolled->delta;
+          int amt = (delta >= 0.f ? 1 : -1) * (int)std::abs(delta);
+          if (amt != 0) {
+            step(-amt);
+            delta -= amt;
+          }
         }
       }
 
-      // step currOp towards targetOp
-      while (currOp != targetOp && !(currOp == model.ops.size() && targetOp > model.ops.size())) {
-        if (currOp < targetOp) {
-          model.ops[currOp++].apply();
-        } else {
-          model.ops[--currOp].undo();
-        }
-      }
-
+      updateCurrOp();
       view.update(model.root, model.ops, currOp);
     }
 
@@ -69,7 +88,27 @@ namespace vcore {
   }
 
   void Controller::jump(size_t op) {
+    std::cout << "JUMP " << op << std::endl;
     targetOp = std::max((size_t)0, op);
+  }
+
+  void Controller::mouseDown() {
+    if (mousePressed) return;
+    mousePressed = true;
+
+    int selectedOp = view.opListHover(mousePos.x, mousePos.y);
+    if (selectedOp >= 0) {
+      jump((size_t)selectedOp);
+    }
+  }
+
+  void Controller::mouseUp() {
+    if (!mousePressed) return;
+    mousePressed = false;
+  }
+
+  void Controller::mouseMove(float x, float y) {
+    mousePos = {x, y};
   }
 
   Controller controller;

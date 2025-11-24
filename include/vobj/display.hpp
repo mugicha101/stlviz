@@ -13,6 +13,8 @@
 #define UPDATE vcore::controller.update(sloc);
 #define OP(content, body) UPDATE; vobj::Operation &op = MODEL.addOp(sloc, content); body; SPIN
 #define FONT_SIZE 32
+#define OP_FONT_SIZE 16
+#define ERR(msg) std::cerr << msg << std::endl; throw std::runtime_error(msg)
 
 #define FRIEND_CREATE template<typename T_FRIEND, typename... Args> friend std::shared_ptr<T_FRIEND> create(Args&&... args);
 
@@ -36,6 +38,7 @@ namespace vobj {
     static uint64_t globalDrawTick; // the current draw tick to allow rendering mark an object as drawn this tick (incremented by View)
     static uint64_t globalUpdateTick; // the current update tick to allow updating mark an object as updated this tick (incremented by Model)
     bool updated = false; // cached result of this tick's update call
+    sf::Vector2f rootPos; // position of element when it has no parent
 
     size_t uid = SIZE_MAX;
 

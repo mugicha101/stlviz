@@ -3,7 +3,7 @@
 
 // debug program
 
-int main() {
+int main() {{
   vstd::vector<int> vec(10, 8);
   DEF(vec);
   vec[1] = 0;
@@ -29,7 +29,8 @@ int main() {
   s.pop();
   s.push(50);
 
+  for (int i = 0; i < 1000; ++i) vec.push_back(i);
+
   // return 0;
   // Using _Exit to avoid SFML static destructor issues
-  _Exit(0);
-}
+}_Exit(0);}

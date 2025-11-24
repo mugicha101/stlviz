@@ -26,10 +26,10 @@ namespace vobj {
       void apply() override {
         auto &elements = list->elements;
         if (element->alive) {
-          throw std::runtime_error("element is already alive");
+          ERR("element is already alive");
         }
         if (elements.find(index) != elements.end()) {
-          throw std::runtime_error("element already exists at index " + std::to_string(index));
+          ERR("element already exists at index " + std::to_string(index));
         }
 
         elements[index] = element;
@@ -40,10 +40,10 @@ namespace vobj {
       void undo() override {
         auto &elements = list->elements;
         if (!element->alive) {
-          throw std::runtime_error("element is not alive");
+          ERR("element is not alive");
         }
         if (elements.find(index) == elements.end() || elements[index] != element) {
-          throw std::runtime_error("element doesn't exist at index " + std::to_string(index));
+          ERR("element doesn't exist at index " + std::to_string(index));
         }
 
         elements.erase(index);

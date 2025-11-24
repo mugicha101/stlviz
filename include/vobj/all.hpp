@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vobj/root_display.hpp"
+#include "vobj/draw_dep.hpp"
 #include "vobj/display.hpp"
 #include "vobj/operation.hpp"
 #include "vobj/primitive.hpp"

@@ -27,14 +27,14 @@ namespace vstd {
       size_t i = 0;
       for (T &x : c) {
         if (bo->elements.find(i) == bo->elements.end()) {
-          throw std::runtime_error("stack<T>::_vstd_update_values: backing object missing element at index " + std::to_string(i));
+          ERR("stack<T>::_vstd_update_values: backing object missing element at index " + std::to_string(i));
         }
         std::shared_ptr<EBT> e = bo->elements[i];
         if constexpr (IS_PRIMITIVE(EBT)) {
           ret = ret | std::dynamic_pointer_cast<EBT>(e)->update(op, x);
         } else {
           // TODO: handle nested objects properly (this part shouldn't get called)
-          std::runtime_error("stack<T>::_vstd_update_values: nested vstd objects not yet supported!");
+          ERR("stack<T>::_vstd_update_values: nested vstd objects not yet supported!");
           // ret = ret | e->update(op);
         }
         i++;

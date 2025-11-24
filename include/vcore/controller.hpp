@@ -10,6 +10,8 @@ namespace vcore {
     View view;
     size_t currOp = 0; // current state is right before this operation
     size_t targetOp = 0; // target state is right before this operation
+    bool mousePressed = false;
+    sf::Vector2f mousePos = {0.f, 0.f};
     Controller();
     ~Controller();
     
@@ -17,6 +19,9 @@ namespace vcore {
     void spin(); // wait until next operation needed (handles sfml events while waiting)
     void update(std::source_location sloc); // check for changed values
     void jump(size_t op);
+    void mouseDown();
+    void mouseUp();
+    void mouseMove(float x, float y);
   };
 
   extern Controller controller;
