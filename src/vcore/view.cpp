@@ -68,7 +68,10 @@ namespace vcore {
 
       // display loc text
       locText.setPosition({(float)(opListX + 5.f), y});
-      locText.setString(std::to_string(ops[i].startLine) + ":" + std::to_string(ops[i].startOffset));
+      bool isRange = ops[i].startLine != ops[i].endLine || ops[i].startOffset != ops[i].endOffset;
+      std::string loc = isRange ? std::to_string(ops[i].startLine) + ":" + std::to_string(ops[i].startOffset) + "-" + std::to_string(ops[i].endLine) + ":" + std::to_string(ops[i].endOffset)
+                                : std::to_string(ops[i].startLine) + ":" + std::to_string(ops[i].startOffset);
+      locText.setString(loc);
       uint32_t locTextWidth = (uint32_t)std::ceil(charWidth * (float)locText.getString().getSize());
       locText.setFillColor(locTextColor);
       locBg.setPosition({(float)(opListX), y});
