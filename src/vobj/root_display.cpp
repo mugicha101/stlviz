@@ -29,7 +29,7 @@ namespace vobj {
       canvas.display();
 
       // draw display
-      d->drawOn(canvas, nameWidth, (float)y);
+      d->drawOn(canvas, nameWidth, (float)y, shared_from_this());
       y += bbox.size.y;
     }
     canvas.display();

@@ -28,6 +28,7 @@ namespace vobj {
     target->parent = newParent;
     std::cout << target->uid << " P " << (target->parent ? (int)target->parent->uid : -1) << std::endl;
   }
+  
   void MoveOp::undo() {
     target->parent = oldParent;
     std::cout << target->uid << " P " << (target->parent ? (int)target->parent->uid : -1) << std::endl;
@@ -36,6 +37,7 @@ namespace vobj {
   void RenameOp::apply() {
     target->name = newName;
   }
+
   void RenameOp::undo() {
     target->name = oldName;
   }

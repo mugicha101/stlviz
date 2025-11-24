@@ -53,6 +53,20 @@ namespace vobj {
     void undo() override {
       target->value = oldValue;
     }
+
+    void draw(sf::RenderTarget &t) override {
+      sf::IntRect bbox = target->getBBox();
+      std::vector<sf::Vector2f> drawLocs;
+      target->getGlobalDrawLocs(drawLocs);
+      for (sf::Vector2f &pos : drawLocs) {
+        sf::RectangleShape rect({(float)bbox.size.x, (float)bbox.size.y});
+        rect.setPosition(pos);
+        rect.setFillColor(sf::Color::Transparent);
+        rect.setOutlineColor(sf::Color::Red);
+        rect.setOutlineThickness(3.f);
+        t.draw(rect);
+      }
+    }
   };
 
   // rename an object

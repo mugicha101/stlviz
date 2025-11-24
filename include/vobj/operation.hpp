@@ -8,14 +8,15 @@
 namespace vobj {
   // represents individual components of operation display (such as highlighting element, arrow between operands, etc)
   // logic for applying and reversing operation goes here
-  struct OpComp : public Display {
+  struct OpComp {
     virtual void apply() = 0;
     virtual void undo() = 0;
     virtual ~OpComp() = default;
+    virtual void draw(sf::RenderTarget &t); // differs from display draw since uses global coordinates
   };
 
   // represents a single operation at a line number and offset
-  struct Operation : public Display {
+  struct Operation {
     size_t oid; // operation unique id
 
     uint64_t startLine;
@@ -30,7 +31,7 @@ namespace vobj {
     Operation(size_t oid, uint64_t line, uint64_t offset, std::string content = "");
     Operation(size_t oid, uint64_t startLine, uint64_t startOffset, uint64_t endLine, uint64_t endOffset, std::string content = "");
 
-    void draw() override;
+    void draw(sf::RenderTarget &t);
     void apply();
     void undo();
   };

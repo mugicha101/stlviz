@@ -46,7 +46,7 @@ namespace vcore {
         }
       }
 
-      view.update(model.root);
+      view.update(model.root, model.ops, currOp);
     }
 
     if (!view.window.isOpen()) {

@@ -2,6 +2,8 @@
 #include <iostream>
 
 namespace vobj {
+  void OpComp::draw(sf::RenderTarget &t) {}
+
   Operation::Operation() : Operation(0, 0, 0, "") {
     
   }
@@ -10,13 +12,13 @@ namespace vobj {
     
   }
 
-  Operation::Operation(size_t oid, uint64_t startLine, uint64_t startOffset, uint64_t endLine, uint64_t endOffset, std::string content) : Display(), oid(oid), startLine(startLine), startOffset(startOffset), endLine(endLine), endOffset(endOffset), content(content) {
+  Operation::Operation(size_t oid, uint64_t startLine, uint64_t startOffset, uint64_t endLine, uint64_t endOffset, std::string content) : oid(oid), startLine(startLine), startOffset(startOffset), endLine(endLine), endOffset(endOffset), content(content) {
     
   }
 
-  void Operation::draw() {
+  void Operation::draw(sf::RenderTarget &t) {
     for (auto &comp : comps) {
-      comp->draw();
+      comp->draw(t);
     }
   }
 

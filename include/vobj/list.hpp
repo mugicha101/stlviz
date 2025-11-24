@@ -122,7 +122,7 @@ namespace vobj {
       int x = cellBorder;
       for (auto &[i, e] : elements) {
         auto bbox = e->getBBox();
-        e->drawOn(canvas, (float)(x + cellPadding), (float)(height - bbox.size.y) * 0.5f);
+        e->drawOn(canvas, (float)(x + cellPadding), (float)(height - bbox.size.y) * 0.5f, shared_from_this());
         sf::RectangleShape rect({(float)(bbox.size.x + cellPadding * 2), (float)(height - cellBorder * 2)});
         rect.setPosition({(float)x, (float)cellBorder});
         rect.setOutlineThickness(cellBorder);

@@ -6,11 +6,13 @@
 #include <memory>
 
 namespace vcore {
+  struct Model;
+
   struct View {
     sf::RenderWindow window;
 
     View(uint32_t width = 0, uint32_t height = 0);
 
-    void update(std::shared_ptr<vobj::Display> root);
+    void update(std::shared_ptr<vobj::Display> root, std::deque<vobj::Operation> &ops, size_t currOp);
   };
 }

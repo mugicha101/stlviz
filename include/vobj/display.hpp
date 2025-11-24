@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <deque>
 #include <source_location>
+#include "vobj/draw_dep.hpp"
 
 #define SLOC std::source_location sloc = std::source_location::current()
 #define CONTROLLER vcore::controller
@@ -21,6 +22,7 @@ namespace vstd {
 
 namespace vobj {
   struct Operation;
+  struct Display;
 
   // represent an object to be displayed on the ui, should not use copy/move constructors (use shared_ptr to pass around)
   // since operation can be reverse, once created should never be destroyed during lifetime of program
@@ -52,6 +54,8 @@ namespace vobj {
     uint64_t localDrawTick = 0; // if matches globalDrawTick this object has been rendered this tick
     uint64_t localUpdateTick = 0; // if matches globalUpdateTick this object has been updated this tick
 
+    std::deque<DrawDep> drawDeps; // draw locations, updated by drawOn calls
+
   protected:
 
     // hide constructor so forced to use create
@@ -80,7 +84,8 @@ namespace vobj {
 
     // draw canvas on another target
     // calls draw if not drawn this tick
-    void drawOn(sf::RenderTarget &t, float x, float y);
+    // should update the drawn locations of this object this tick for ops to use
+    virtual void drawOn(sf::RenderTarget &t, float x, float y, std::shared_ptr<Display> context = nullptr);
     
     // compares value with mapped vstd class instance, if value changed since last update, adds value change to op and returns true
     // relies on vstd::base::_vstd_update_values() to do all the heavy lifting since raw type is unknown here
@@ -89,6 +94,12 @@ namespace vobj {
 
     // update local canvas
     virtual void draw();
+
+    // gets positions in global coordinates this object was drawn at this tick
+    // does this by following DrawDep DAG
+    // appends to res
+    // recursive (adds relative to offset)
+    void getGlobalDrawLocs(std::vector<sf::Vector2f> &res, sf::Vector2f offset = {0,0}) const;
   };
 
   // factory

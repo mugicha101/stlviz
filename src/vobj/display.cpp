@@ -32,7 +32,9 @@ namespace vobj {
     return updated = o && o->_vstd_update_values(op);
   }
 
-  void Display::drawOn(sf::RenderTarget &t, float x, float y) {
+  void Display::drawOn(sf::RenderTarget &t, float x, float y, std::shared_ptr<Display> context) {
+    if (context) drawDeps.push_back({x, y, context});
+
     // TODO: figure out why setTextureRect behaves weird
     sf::Sprite sprite(getTexture());
     sprite.setPosition({x, y});
@@ -42,6 +44,7 @@ namespace vobj {
   const sf::Texture &Display::getTexture() {
     if (localDrawTick != globalDrawTick) {
       localDrawTick = globalDrawTick;
+      drawDeps.clear();
       draw();
     }
 
@@ -51,6 +54,7 @@ namespace vobj {
   sf::IntRect Display::getBBox() {
     if (localDrawTick != globalDrawTick) {
       localDrawTick = globalDrawTick;
+      drawDeps.clear();
       draw();
     }
 
@@ -91,5 +95,15 @@ namespace vobj {
       f = !of;
     }
     canvas.display();
+  }
+
+  void Display::getGlobalDrawLocs(std::vector<sf::Vector2f> &res, sf::Vector2f offset) const {
+    if (drawDeps.empty()) {
+      res.push_back(offset);
+      return;
+    }
+    for (const DrawDep &dep : drawDeps) {
+      dep.parent->getGlobalDrawLocs(res, offset + sf::Vector2f{dep.x, dep.y});
+    }
   }
 }
