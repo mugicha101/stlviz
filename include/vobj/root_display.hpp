@@ -14,6 +14,8 @@ namespace vobj {
 
   public:
 
+    sf::Vector2i size{800, 600};
+
     // draw all displays recursively
     // each call to this represents a draw tick (increments globalDrawTick)
     void draw() override;

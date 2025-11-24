@@ -7,7 +7,7 @@ namespace vobj {
   }
 
   void RootDisplay::draw() {
-    resetCanvas(800u, 600u);
+    resetCanvas(size.x, size.y);
     int y = 0;
     for (std::shared_ptr<Display> d : Display::displays) {
       // Skip displays that have a parent, are not alive, or are this RootDisplay itself
