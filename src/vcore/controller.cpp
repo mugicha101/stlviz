@@ -6,11 +6,6 @@
 namespace vcore {
   Controller::Controller() : view(800u, 600u) {}
   Controller::~Controller() {
-    std::cout << "EXIT UPDATE" << std::endl;
-    update(std::source_location::current());
-    std::cout << "EXIT SPIN " << std::endl;
-    spin();
-    std::cout << "EXIT DONE " << std::endl;
   }
 
   void Controller::spin() {
@@ -51,7 +46,8 @@ namespace vcore {
 
     if (!view.window.isOpen()) {
       std::cout << "WINDOW CLOSED" << std::endl;
-      exit(0);
+      //using _Exit(0) since it calls static destructorswhich run in wrong order, leading to exit error
+      _Exit(0);
     }
   }
 

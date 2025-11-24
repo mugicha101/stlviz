@@ -2,7 +2,7 @@
 
 namespace vcore {
   Model::Model() {
-    
+
   }
 
   vobj::Operation &Model::addOp(std::source_location sloc, std::string content) {
