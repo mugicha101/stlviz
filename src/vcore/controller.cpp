@@ -29,6 +29,10 @@ namespace vcore {
             default:
               break;
           }
+        } else if (const auto *resize = event->getIf<sf::Event::Resized>()) {
+            // update the view to the new size of the window
+            sf::FloatRect visibleArea(sf::Vector2f{0.f, 0.f}, sf::Vector2f{(float)resize->size.x, (float)resize->size.y});
+            view.window.setView(sf::View(visibleArea));
         }
       }
 
