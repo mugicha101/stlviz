@@ -9,13 +9,14 @@
 
 namespace vstd {
   template<typename T, typename Container = std::deque<T>>
-  class stack : public base {
+  class stack : public std::stack<T, Container>, public base {
+    using SUPER = std::stack<T, Container>;
     using EBT = vobj::BackingType<T>::type;
+    using std::stack<T, Container>::c;
 
     // assert that element is a primitive
     ASSERT_PRIMITIVE(T);
 
-    std::stack<T, Container> s;
     std::shared_ptr<vobj::List<EBT>> bo;
 
     bool _vstd_update_values(vobj::Operation &op) override {
@@ -23,9 +24,20 @@ namespace vstd {
       bool ret = false;
 
       // need to track the container's elements, use backing object
-      size_t idx = 0;
-      for (auto& elem : bo->elements) {
-        idx++;
+      size_t i = 0;
+      for (T &x : c) {
+        if (bo->elements.find(i) == bo->elements.end()) {
+          throw std::runtime_error("stack<T>::_vstd_update_values: backing object missing element at index " + std::to_string(i));
+        }
+        std::shared_ptr<EBT> e = bo->elements[i];
+        if constexpr (IS_PRIMITIVE(EBT)) {
+          ret = ret | std::dynamic_pointer_cast<EBT>(e)->update(op, x);
+        } else {
+          // TODO: handle nested objects properly (this part shouldn't get called)
+          std::runtime_error("stack<T>::_vstd_update_values: nested vstd objects not yet supported!");
+          // ret = ret | e->update(op);
+        }
+        i++;
       }
       return ret;
     }
@@ -53,20 +65,19 @@ namespace vstd {
       init_helper(sloc);
     }
 
-    stack(const stack& other, SLOC) : s(other.s) {
+    stack(const stack& other, SLOC) : SUPER(other.s) {
       init_helper(sloc);
     }
 
-    stack(stack&& other, SLOC) noexcept : s(std::move(other.s)) {
+    stack(stack&& other, SLOC) noexcept : SUPER(std::move(other.s)) {
       init_helper(sloc);
     }
 
     ~stack() {
       SLOC;
       OP("stack destruction",
-        // Remove all elements from the backing object
-        while (!bo->elements.empty()) {
-          bo->remove(op, bo->elements.size() - 1);
+        for (size_t i = 0; i < size(); ++i) {
+          bo->remove(op, i);
         }
         op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
       )
@@ -75,7 +86,7 @@ namespace vstd {
     // Stack operations
     void push(const T &value, SLOC) {
       OP("stack push",
-        s.push(value);
+        SUPER::push(value);
         size_t i = size() - 1;
         std::shared_ptr<EBT> e = vobj::create<EBT>(value);
         bo->add(op, i, e);
@@ -85,9 +96,9 @@ namespace vstd {
 
     void push(T &&value, SLOC) {
       OP("stack push",
-        s.push(std::move(value));
+        SUPER::push(std::move(value));
         size_t i = size() - 1;
-        std::shared_ptr<EBT> e = vobj::create<EBT>(s.top());
+        std::shared_ptr<EBT> e = vobj::create<EBT>(top());
         bo->add(op, i, e);
         op.comps.push_back(std::make_unique<vobj::AssignOp<T>>(e, e->value, e->latest));
       )
@@ -95,8 +106,8 @@ namespace vstd {
 
     void pop(SLOC) {
       OP("stack pop",
-        if (!s.empty()) {
-          s.pop();
+        if (!empty()) {
+          SUPER::pop();
           size_t i = size();
           bo->remove(op, i);
         }
@@ -104,19 +115,19 @@ namespace vstd {
     }
 
     T& top() {
-      return s.top();
+      return SUPER::top();
     }
 
     const T& top() const {
-      return s.top();
+      return SUPER::top();
     }
 
     bool empty() const {
-      return s.empty();
+      return SUPER::empty();
     }
 
     size_t size() const {
-      return s.size();
+      return SUPER::size();
     }
   };
 }

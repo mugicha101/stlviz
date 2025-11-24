@@ -9,10 +9,11 @@
 namespace vstd {
   template<typename T>
   class vector : public std::vector<T>, public base {
+    using SUPER = std::vector<T>;
     using EBT = vobj::BackingType<T>::type;
     // using Allocator = std::allocator<T>; TODO: support custom allocators like std::vector does
-    using iterator = typename std::vector<T>::iterator;
-    using const_iterator = typename std::vector<T>::const_iterator;
+    using iterator = typename SUPER::iterator;
+    using const_iterator = typename SUPER::const_iterator;
 
     // for now, assert that element is a primitive
     // TODO: handle nesting
@@ -30,7 +31,7 @@ namespace vstd {
         }
         std::shared_ptr<EBT> e = bo->elements[i];
         if constexpr (IS_PRIMITIVE(EBT)) {
-          ret = ret | std::dynamic_pointer_cast<EBT>(e)->update(op, std::vector<T>::at(i));
+          ret = ret | std::dynamic_pointer_cast<EBT>(e)->update(op, SUPER::at(i));
         } else {
           // TODO: handle nested objects properly (this part shouldn't get called)
           std::runtime_error("vector<T>::_vstd_update_values: nested vstd objects not yet supported!");
@@ -49,7 +50,7 @@ namespace vstd {
         op.comps.push_back(std::make_unique<vobj::ConstructOp>(bo, sloc));
         for (size_t i = 0; i < size(); ++i) {
           // create backing element object and add init op
-          std::shared_ptr<EBT> e = vobj::create<EBT>(std::vector<T>::at(i));
+          std::shared_ptr<EBT> e = vobj::create<EBT>(SUPER::at(i));
           bo->add(op, i, e);
           op.comps.push_back(std::make_unique<vobj::AssignOp<T>>(e, e->value, e->latest));
         }
@@ -58,7 +59,7 @@ namespace vstd {
 
     void push_back_helper(vobj::Operation &op) {
       size_t i = size() - 1;
-      std::shared_ptr<EBT> e = vobj::create<EBT>(std::vector<T>::at(i));
+      std::shared_ptr<EBT> e = vobj::create<EBT>(SUPER::at(i));
       bo->add(op, i, e);
       op.comps.push_back(std::make_unique<vobj::AssignOp<T>>(e, e->value, e->latest));
     }
@@ -71,23 +72,23 @@ namespace vstd {
       )
     }
 
-    vector(SLOC) : std::vector<T>() {
+    vector(SLOC) : SUPER() {
       init_helper(sloc);
     }
 
-    vector(const vector& other, SLOC) : std::vector<T>(other) {
+    vector(const vector& other, SLOC) : SUPER(other) {
       init_helper(sloc);
     }
 
-    vector(vector&& other, SLOC) noexcept : std::vector<T>(std::move(other)) {
+    vector(vector&& other, SLOC) noexcept : SUPER(std::move(other)) {
       init_helper(sloc);
     }
 
-    vector(size_t count, SLOC) : std::vector<T>(count) {
+    vector(size_t count, SLOC) : SUPER(count) {
       init_helper(sloc);
     }
 
-    vector(size_t count, const T& value, SLOC) : std::vector<T>(count, value) {
+    vector(size_t count, const T& value, SLOC) : SUPER(count, value) {
       init_helper(sloc);
     }
 
@@ -102,30 +103,30 @@ namespace vstd {
     }
 
     // since iterators can only update values, and vast majority of usecases use auto for type resolution, can just use iterator directly to std::vector
-    iterator begin() { return std::vector<T>::begin(); }
-    iterator end()   { return std::vector<T>::end(); }
-    const_iterator begin() const { return std::vector<T>::begin(); }
-    const_iterator end() const { return std::vector<T>::end(); }
+    iterator begin() { return SUPER::begin(); }
+    iterator end()   { return SUPER::end(); }
+    const_iterator begin() const { return SUPER::begin(); }
+    const_iterator end() const { return SUPER::end(); }
 
-    size_t size() const { return std::vector<T>::size(); }
+    size_t size() const { return SUPER::size(); }
 
     void push_back(const T &value, SLOC) {
       OP("vector push_back",
-        std::vector<T>::push_back(value);
+        SUPER::push_back(value);
         push_back_helper(op);
       )
     }
 
     void push_back(T &&value, SLOC) {
       OP("vector push_back",
-        std::vector<T>::push_back(std::move(value));
+        SUPER::push_back(std::move(value));
         push_back_helper(op);
       )
     }
 
     void pop_back(SLOC) {
       OP("vector pop_back",
-        std::vector<T>::pop_back();
+        SUPER::pop_back();
         size_t i = size();
         bo->remove(op, i);
       )
