@@ -21,3 +21,7 @@ namespace vobj {
 
 // allow naming vstd objects to their variable name
 #define DEF(X) X._vstd_rename(#X)
+
+// allows main to keep window open after finishing
+// does this by intercepting final destructor call
+#define MAIN_DONE() CONTROLLER.mainDone = true

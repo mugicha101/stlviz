@@ -3,22 +3,22 @@
 namespace vobj {
   void ConstructOp::apply() {
     std::cout << target->uid << " ALIVE" << std::endl;
-    target->alive = true;
+    target->setAlive(true);
     target->name = defaultName;
   }
 
   void ConstructOp::undo() {
     std::cout << target->uid << " DEAD" << std::endl;
-    target->alive = false;
+    target->setAlive(false);
     target->name = "";
   }
 
   void DestroyOp::apply() {
-    target->alive = false;
+    target->setAlive(false);
   }
 
   void DestroyOp::undo() {
-    target->alive = true;
+    target->setAlive(true);
   }
 
   MoveOp::MoveOp(std::shared_ptr<Display> target, std::shared_ptr<Display> oldParent, std::shared_ptr<Display> newParent) : target(target), oldParent(oldParent), newParent(newParent) {

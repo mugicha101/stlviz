@@ -6,8 +6,13 @@
 
 namespace vobj {
   std::deque<std::shared_ptr<Display>> Display::displays;
-  uint64_t Display::globalDrawTick;
-  uint64_t Display::globalUpdateTick;
+  uint64_t Display::globalDrawTick = 0;
+  uint64_t Display::globalUpdateTick = 0;
+  uint64_t Display::numAlive = 0;
+
+  uint64_t Display::getNumAlive() {
+    return numAlive;
+  }
 
   Display::Display() : localDrawTick(globalDrawTick), localUpdateTick(globalUpdateTick), canvas({32u, 32u}) {}
 
@@ -105,5 +110,16 @@ namespace vobj {
     for (const DrawDep &dep : drawDeps) {
       dep.parent->getGlobalDrawLocs(res, offset + sf::Vector2f{dep.x, dep.y});
     }
+  }
+
+  void Display::setAlive(bool alive) {
+    if (this->alive == alive) return;
+
+    this->alive = alive;
+    numAlive += alive ? 1 : -1;
+  }
+
+  bool Display::isAlive() const {
+    return alive;
   }
 }

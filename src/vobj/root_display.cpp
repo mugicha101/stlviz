@@ -11,7 +11,7 @@ namespace vobj {
     int y = 0;
     for (std::shared_ptr<Display> d : Display::displays) {
       // Skip displays that have a parent, are not alive, or are this RootDisplay itself
-      if (d->parent || !d->alive || d.get() == this) continue;
+      if (d->parent || !d->isAlive() || d.get() == this) continue;
       
       bbox = d->getBBox();
 
@@ -39,7 +39,7 @@ namespace vobj {
   bool RootDisplay::update(Operation &op) {
     for (std::shared_ptr<Display> d : Display::displays) {
       // Skip displays that have a parent, are not alive, or are this RootDisplay itself
-      if (d->parent || !d->alive || d.get() == this) continue;
+      if (d->parent || !d->isAlive() || d.get() == this) continue;
 
       std::cout << "UPDATE TOP LEVEL " << d->uid << std::endl;
       d->update(op);

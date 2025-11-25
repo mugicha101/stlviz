@@ -7,7 +7,11 @@ namespace vcore {
   Controller::Controller() : view(sf::VideoMode::getDesktopMode().size / 2u) {
     view.window.setFramerateLimit(60);
   }
-  Controller::~Controller() {
+  Controller::~Controller() {}
+
+  Controller &Controller::globalController() {
+    static Controller controller;
+    return controller;
   }
 
   void Controller::spin() {
@@ -22,7 +26,8 @@ namespace vcore {
       }
     };
     updateCurrOp();
-    while (view.window.isOpen() && targetOp <= model.ops.size()) {
+    bool indefiniteWait = mainDone && vobj::Display::getNumAlive() == 0;
+    while (view.window.isOpen() && (indefiniteWait || targetOp <= model.ops.size())) {
       while (const std::optional event = view.window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
           view.window.close();
@@ -64,6 +69,8 @@ namespace vcore {
       }
 
       updateCurrOp();
+      indefiniteWait = mainDone && vobj::Display::getNumAlive() == 0;
+      if (indefiniteWait) targetOp = std::min(targetOp, model.ops.size());
       view.update(model.root, model.ops, currOp);
     }
 
@@ -110,6 +117,4 @@ namespace vcore {
   void Controller::mouseMove(float x, float y) {
     mousePos = {x, y};
   }
-
-  Controller controller;
 }

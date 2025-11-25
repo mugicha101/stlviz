@@ -6,11 +6,11 @@
 #include "vobj/draw_dep.hpp"
 
 #define SLOC std::source_location sloc = std::source_location::current()
-#define CONTROLLER vcore::controller
-#define MODEL vcore::controller.model
-#define VIEW vcore::controller.view
-#define SPIN vcore::controller.spin();
-#define UPDATE vcore::controller.update(sloc);
+#define CONTROLLER vcore::Controller::globalController()
+#define MODEL CONTROLLER.model
+#define VIEW CONTROLLER.view
+#define SPIN CONTROLLER.spin();
+#define UPDATE CONTROLLER.update(sloc);
 #define OP(content, body) UPDATE; vobj::Operation &op = MODEL.addOp(sloc, content); body; SPIN
 #define FONT_SIZE 32
 #define OP_FONT_SIZE 16
@@ -22,6 +22,12 @@ namespace vstd {
   class base;
 }
 
+namespace vcore {
+  struct Model;
+  struct View;
+  struct Controller;
+}
+
 namespace vobj {
   struct Operation;
   struct Display;
@@ -29,37 +35,42 @@ namespace vobj {
   // represent an object to be displayed on the ui, should not use copy/move constructors (use shared_ptr to pass around)
   // since operation can be reverse, once created should never be destroyed during lifetime of program
   // all values should be updated only by the operation
-  struct Display : public std::enable_shared_from_this<Display> {
+  class Display : public std::enable_shared_from_this<Display> { 
+  public:
+
     // stores all displays with index being uid
     static std::deque<std::shared_ptr<Display>> displays;
+    static uint64_t getNumAlive();
+    
+  protected:
     
     static sf::Font &getFont();
-
     static uint64_t globalDrawTick; // the current draw tick to allow rendering mark an object as drawn this tick (incremented by View)
     static uint64_t globalUpdateTick; // the current update tick to allow updating mark an object as updated this tick (incremented by Model)
+    static uint64_t numAlive; // number of currently alive displays
     bool updated = false; // cached result of this tick's update call
     sf::Vector2f rootPos; // position of element when it has no parent
 
+    // MVC needs to access global ticks and font
+    friend struct vcore::Model;
+    friend struct vcore::View;
+    friend struct vcore::Controller;
+
+  public:
+
     size_t uid = SIZE_MAX;
-
     std::string name; // name (set to init location by ConstructOp, can be modified with RenameOp)
-
-    sf::RenderTexture canvas; // sfml canvas that caches this object's drawing (parents can use it)
-    
-    sf::IntRect bbox; // bounding box in canvas (so don't have to draw entire canvas)
-
+    std::shared_ptr<Display> parent; // pointer to parent display, nullptr if none
     vstd::base *o; // pointer to vstd object this display represents, nullptr if none (raw pointer due to vstd not being created as a smart ptr)
 
-    std::shared_ptr<Display> parent; // pointer to parent display, nullptr if none
+  protected:
 
+    sf::RenderTexture canvas; // sfml canvas that caches this object's drawing (parents can use it)
+    sf::IntRect bbox; // bounding box in canvas (so don't have to draw entire canvas)
     bool alive = false; // true if the object is alive by the current operation's completion
-
     uint64_t localDrawTick = 0; // if matches globalDrawTick this object has been rendered this tick
     uint64_t localUpdateTick = 0; // if matches globalUpdateTick this object has been updated this tick
-
     std::deque<DrawDep> drawDeps; // draw locations, updated by drawOn calls
-
-  protected:
 
     // hide constructor so forced to use create
     Display();
@@ -103,6 +114,9 @@ namespace vobj {
     // appends to res
     // recursive (adds relative to offset)
     void getGlobalDrawLocs(std::vector<sf::Vector2f> &res, sf::Vector2f offset = {0,0}) const;
+
+    void setAlive(bool alive);
+    bool isAlive() const;
   };
 
   // factory

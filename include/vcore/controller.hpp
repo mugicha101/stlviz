@@ -6,12 +6,14 @@
 // control the flow of the program, handle stepping forward and backward
 namespace vcore {
   struct Controller {
+    static Controller &globalController();
     Model model;
     View view;
     size_t currOp = 0; // current state is right before this operation
     size_t targetOp = 0; // target state is right before this operation
     bool mousePressed = false;
     sf::Vector2f mousePos = {0.f, 0.f};
+    bool mainDone = false;
     Controller();
     ~Controller();
     
@@ -23,6 +25,4 @@ namespace vcore {
     void mouseUp();
     void mouseMove(float x, float y);
   };
-
-  extern Controller controller;
 }

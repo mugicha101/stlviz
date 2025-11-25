@@ -3,7 +3,7 @@
 
 // debug program
 
-int main() {{
+int main() {
   vstd::vector<int> vec(10, 8);
   DEF(vec);
   vec[1] = 0;
@@ -29,8 +29,11 @@ int main() {{
   s.pop();
   s.push(50);
 
-  for (int i = 0; i < 1000; ++i) vec.push_back(i);
+  for (int i = 0; i < 10; ++i) {
+    if (!vec.empty()) vec[rand() % vec.size()] = rand() % 100;
+    if (vec.empty() || rand() % 2) vec.push_back(rand() % 100);
+    else vec.pop_back();
+  }
 
-  // return 0;
-  // Using _Exit to avoid SFML static destructor issues
-}_Exit(0);}
+  MAIN_DONE();
+}

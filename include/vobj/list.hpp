@@ -25,7 +25,7 @@ namespace vobj {
 
       void apply() override {
         auto &elements = list->elements;
-        if (element->alive) {
+        if (element->isAlive()) {
           ERR("element is already alive");
         }
         if (elements.find(index) != elements.end()) {
@@ -34,12 +34,12 @@ namespace vobj {
 
         elements[index] = element;
         element->parent = list;
-        element->alive = true;
+        element->setAlive(true);
       }
 
       void undo() override {
         auto &elements = list->elements;
-        if (!element->alive) {
+        if (!element->isAlive()) {
           ERR("element is not alive");
         }
         if (elements.find(index) == elements.end() || elements[index] != element) {
@@ -48,7 +48,7 @@ namespace vobj {
 
         elements.erase(index);
         element->parent = nullptr;
-        element->alive = false;
+        element->setAlive(false);
       }
     };
 
