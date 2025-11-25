@@ -2,9 +2,11 @@
 
 #include "vobj/all.hpp"
 #include "vstd/base.hpp"
+#include <algorithm>
 #include <deque>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 namespace vstd {
 template <typename T> class deque : public std::deque<T>, public base {
@@ -113,6 +115,99 @@ public:
   void pop_back(SLOC) {
     OP("deque pop_back", SUPER::pop_back(); size_t i = size();
        bo->remove(op, i);)
+  }
+
+  void push_front(const T &value, SLOC) {
+
+    UPDATE;
+    vobj::Operation &op = MODEL.addOp(sloc, "deque push_front");
+
+    SUPER::push_front(value);
+
+    using ElemPair = std::pair<size_t, std::shared_ptr<EBT>>;
+    std::vector<ElemPair> elems;
+    elems.reserve(bo->elements.size());
+    for (auto &[idx, elem] : bo->elements) {
+      elems.emplace_back(idx, elem);
+    }
+
+    std::sort(
+        elems.begin(), elems.end(),
+        [](const ElemPair &a, const ElemPair &b) { return a.first > b.first; });
+
+    for (auto &[idx, elem] : elems) {
+      bo->remove(op, idx);        
+      bo->add(op, idx + 1, elem); 
+    }
+
+    std::shared_ptr<EBT> e = vobj::create<EBT>(SUPER::at(0));
+    bo->add(op, 0, e);
+    op.comps.push_back(
+        std::make_unique<vobj::AssignOp<T>>(e, e->value, e->latest));
+
+    SPIN;
+  }
+
+  void push_front(T &&value, SLOC) {
+    UPDATE;
+    vobj::Operation &op = MODEL.addOp(sloc, "deque push_front");
+
+    SUPER::push_front(std::move(value));
+
+    using ElemPair = std::pair<size_t, std::shared_ptr<EBT>>;
+    std::vector<ElemPair> elems;
+    elems.reserve(bo->elements.size());
+    for (auto &[idx, elem] : bo->elements) {
+      elems.emplace_back(idx, elem);
+    }
+    std::sort(
+        elems.begin(), elems.end(),
+        [](const ElemPair &a, const ElemPair &b) { return a.first > b.first; });
+
+    for (auto &[idx, elem] : elems) {
+      bo->remove(op, idx);
+      bo->add(op, idx + 1, elem);
+    }
+
+    std::shared_ptr<EBT> e = vobj::create<EBT>(SUPER::at(0));
+    bo->add(op, 0, e);
+    op.comps.push_back(
+        std::make_unique<vobj::AssignOp<T>>(e, e->value, e->latest));
+
+    SPIN;
+  }
+
+  void pop_front(SLOC) {
+    UPDATE;
+    vobj::Operation &op = MODEL.addOp(sloc, "deque pop_front");
+
+    if (!SUPER::empty()) {
+
+      SUPER::pop_front();
+
+
+      bo->remove(op, 0);
+
+      using ElemPair = std::pair<size_t, std::shared_ptr<EBT>>;
+      std::vector<ElemPair> elems;
+      elems.reserve(bo->elements.size());
+      for (auto &[idx, elem] : bo->elements) {
+        if (idx == 0)
+          continue;
+        elems.emplace_back(idx, elem);
+      }
+      std::sort(elems.begin(), elems.end(),
+                [](const ElemPair &a, const ElemPair &b) {
+                  return a.first < b.first;
+                });
+
+      for (auto &[idx, elem] : elems) {
+        bo->remove(op, idx);
+        bo->add(op, idx - 1, elem);
+      }
+    }
+
+    SPIN;
   }
 };
 } 

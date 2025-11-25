@@ -42,9 +42,9 @@ int main() {
   DEF(dq);
   dq.push_back(4);
   dq.push_back(20);
-  // dq.push_front(10);
+  dq.push_front(10);
   dq.pop_back();
-  // dq.pop_front();
+  dq.pop_front();
   dq.pop_back();
 
 
