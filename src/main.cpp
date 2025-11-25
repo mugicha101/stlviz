@@ -29,11 +29,24 @@ int main() {
   s.pop();
   s.push(50);
 
+
   for (int i = 0; i < 10; ++i) {
     if (!vec.empty()) vec[rand() % vec.size()] = rand() % 100;
     if (vec.empty() || rand() % 2) vec.push_back(rand() % 100);
     else vec.pop_back();
   }
+
+  // for (int i = 0; i < 1000; ++i) vec.push_back(i);
+
+  vstd::deque<int> dq;
+  DEF(dq);
+  dq.push_back(4);
+  dq.push_back(20);
+  // dq.push_front(10);
+  dq.pop_back();
+  // dq.pop_front();
+  dq.pop_back();
+
 
   MAIN_DONE();
 }
