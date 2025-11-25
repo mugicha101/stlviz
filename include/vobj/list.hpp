@@ -118,6 +118,9 @@ namespace vobj {
       height += margin;
 
       resetCanvas(width, height);
+      sf::RectangleShape bg({(float)width, (float)height});
+      bg.setFillColor(sf::Color(255, 255, 255));
+      canvas.draw(bg);
 
       int x = cellBorder;
       for (auto &[i, e] : elements) {

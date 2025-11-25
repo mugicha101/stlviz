@@ -7,6 +7,7 @@
 
 namespace vcore {
   struct Model;
+  struct Controller;
 
   struct View {
     sf::RenderWindow window;
@@ -16,7 +17,7 @@ namespace vcore {
     View(uint32_t width = 0, uint32_t height = 0);
     View(sf::Vector2u size) : View(size.x, size.y) {}
 
-    void update(std::shared_ptr<vobj::Display> root, std::deque<vobj::Operation> &ops, size_t currOp);
+    void update(vcore::Controller &controller);
     int opListHover(float mouseX, float mouseY) const;
   };
 }

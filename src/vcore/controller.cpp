@@ -58,20 +58,15 @@ namespace vcore {
         } else if (const auto *mouseButtonReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
           if (mouseButtonReleased->button == sf::Mouse::Button::Left) mouseUp();
         } else if (const auto *mouseScrolled = event->getIf<sf::Event::MouseWheelScrolled>()) {
-          static float delta = 0.f;
-          delta += mouseScrolled->delta;
-          int amt = (delta >= 0.f ? 1 : -1) * (int)std::abs(delta);
-          if (amt != 0) {
-            step(-amt);
-            delta -= amt;
-          }
+          mouseScroll(mouseScrolled->delta);
         }
       }
 
       updateCurrOp();
       indefiniteWait = mainDone && vobj::Display::getNumAlive() == 0;
       if (indefiniteWait) targetOp = std::min(targetOp, model.ops.size());
-      view.update(model.root, model.ops, currOp);
+      if (selectedDisplay && (!selectedDisplay->alive || selectedDisplay->parent)) selectedDisplay = nullptr;
+      view.update(*this);
     }
 
     if (!view.window.isOpen()) {
@@ -106,6 +101,9 @@ namespace vcore {
     int selectedOp = view.opListHover(mousePos.x, mousePos.y);
     if (selectedOp >= 0) {
       jump((size_t)selectedOp);
+    } else {
+      selectedDisplay = model.root->at(model.root->screen2world(mousePos));
+      if (selectedDisplay) selectedDisplay->priority = vobj::Display::globalDrawTick;
     }
   }
 
@@ -115,6 +113,34 @@ namespace vcore {
   }
 
   void Controller::mouseMove(float x, float y) {
+    if (mousePressed) {
+      if (selectedDisplay) {
+        selectedDisplay->pos.x += (x - mousePos.x) * model.root->camZoom;
+        selectedDisplay->pos.y += (y - mousePos.y) * model.root->camZoom;
+      } else {
+        sf::Vector2f oldMouseWorldPos = model.root->screen2world(mousePos);
+        sf::Vector2f newMouseWorldPos = model.root->screen2world({x, y});
+        model.root->camPosition -= newMouseWorldPos - oldMouseWorldPos;
+      }
+    }
     mousePos = {x, y};
+  }
+
+  void Controller::mouseScroll(float delta) {
+    if (mousePos.x >= view.opListX) {
+      static float partialStep = 0.f;
+      partialStep += delta;
+      int amt = (partialStep >= 0.f ? 1 : -1) * (int)std::abs(partialStep);
+      if (amt != 0) {
+        step(-amt);
+        partialStep -= amt;
+      }
+    } else {
+      sf::Vector2f mouseWorldPos = model.root->screen2world(mousePos);
+      float zoomFactor = pow(1.1f, -delta);
+      model.root->camZoom *= zoomFactor;
+      sf::Vector2f newMouseWorldPos = model.root->screen2world(mousePos);
+      model.root->camPosition += mouseWorldPos - newMouseWorldPos;
+    }
   }
 }

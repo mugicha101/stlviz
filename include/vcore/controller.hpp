@@ -14,6 +14,7 @@ namespace vcore {
     bool mousePressed = false;
     sf::Vector2f mousePos = {0.f, 0.f};
     bool mainDone = false;
+    std::shared_ptr<vobj::Display> selectedDisplay = nullptr;
     Controller();
     ~Controller();
     
@@ -24,5 +25,6 @@ namespace vcore {
     void mouseDown();
     void mouseUp();
     void mouseMove(float x, float y);
+    void mouseScroll(float delta);
   };
 }

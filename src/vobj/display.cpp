@@ -104,7 +104,7 @@ namespace vobj {
 
   void Display::getGlobalDrawLocs(std::vector<sf::Vector2f> &res, sf::Vector2f offset) const {
     if (drawDeps.empty()) {
-      res.push_back(offset);
+      res.push_back(offset + pos);
       return;
     }
     for (const DrawDep &dep : drawDeps) {

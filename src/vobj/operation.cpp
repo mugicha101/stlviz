@@ -2,7 +2,7 @@
 #include <iostream>
 
 namespace vobj {
-  void OpComp::draw(sf::RenderTarget &t) {}
+  void OpComp::draw(std::shared_ptr<vobj::RootDisplay> root, sf::RenderTarget &t) {}
 
   Operation::Operation() : Operation(0, 0, 0, "") {
     
@@ -16,9 +16,9 @@ namespace vobj {
     
   }
 
-  void Operation::draw(sf::RenderTarget &t) {
+  void Operation::draw(std::shared_ptr<vobj::RootDisplay> root, sf::RenderTarget &t) {
     for (auto &comp : comps) {
-      comp->draw(t);
+      comp->draw(root, t);
     }
   }
 

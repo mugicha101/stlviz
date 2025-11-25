@@ -7,35 +7,69 @@ namespace vcore {
     window.setFramerateLimit(60);
   }
 
-  void View::update(std::shared_ptr<vobj::Display> root, std::deque<vobj::Operation> &ops, size_t currOp) {
-    // draw data window
-    ++vobj::Display::globalDrawTick;
+  void View::update(vcore::Controller &controller) {
     window.clear(sf::Color(200, 200, 255));
-    auto root_display = dynamic_pointer_cast<vobj::RootDisplay>(root);
-    uint64_t width = window.getSize().x;
-    uint64_t height = window.getSize().y;
-    opListX = width * 3u / 4u;
-    if (root_display) {
-      root_display->size.x = opListX;
-      root_display->size.y = height;
+
+    auto root_display = controller.model.root;
+    if (!root_display) {
+      window.display();
+      return;
     }
-    root->drawOn(window, 0.f, 0.f);
-
-    // draw last operation to window
-    if (currOp > 0) ops[currOp-1].draw(window);
-
-    // draw operations list
-    sf::RectangleShape opListBg({(float)(width - opListX), (float)height});
-    opListBg.setPosition({(float)opListX, 0.f});
-    opListBg.setFillColor(sf::Color(220, 220, 220));
-    window.draw(opListBg);
-    const sf::Color selectColor(255, 255, 0);
+    root_display->size = static_cast<sf::Vector2i>(window.getSize());
+    auto mousePos = controller.mousePos;
+    auto mouseWorldPos = root_display->screen2world(mousePos);
+    auto &ops = controller.model.ops;
+    auto currOp = controller.currOp;
+    auto hoverOp = opListHover(mousePos.x, mousePos.y);
+    auto selectedDisplay = controller.selectedDisplay;
+    auto hoveredDisplay = root_display->at(mouseWorldPos);
+    
+    const sf::Color hoveredDisplayColor(255, 0, 0);
+    const sf::Color selectedDisplayColor(255, 255, 0);
+    const sf::Color hoverOpColor(200, 200, 200);
+    const sf::Color selectOpColor(255, 255, 0);
     const sf::Color normalColor(255, 255, 255);
     const sf::Color locSelectColor(255, 0, 0);
     const sf::Color locNormalColor(25, 25, 25);
     const sf::Color borderColor(0, 0, 0);
     const sf::Color textColor(0, 0, 0);
     const sf::Color locTextColor(255, 255, 255);
+
+    // draw data window
+    ++vobj::Display::globalDrawTick;
+    uint64_t width = window.getSize().x;
+    uint64_t height = window.getSize().y;
+    opListX = width * 3u / 4u;
+    root_display->size.x = opListX;
+    root_display->size.y = height;
+    root_display->drawOn(window, 0.f, 0.f);
+
+    // draw last operation to window
+    if (currOp > 0) ops[currOp-1].draw(root_display, window);
+    
+    // draw hovered and selected displays
+    auto drawSelectBox = [this, root_display](std::shared_ptr<vobj::Display> display, sf::Color color) {
+      sf::RectangleShape selectBox;
+      selectBox.setFillColor(sf::Color::Transparent);
+      selectBox.setOutlineThickness(3.f);
+      sf::FloatRect bbox = static_cast<sf::FloatRect>(display->getBBox());
+      selectBox.setSize(bbox.size / root_display->camZoom);
+      selectBox.setPosition(root_display->world2screen(display->pos + bbox.position));
+      selectBox.setOutlineColor(color);
+      window.draw(selectBox);
+    };
+    if (hoveredDisplay && hoveredDisplay != selectedDisplay) {
+      drawSelectBox(hoveredDisplay, hoveredDisplayColor);
+    }
+    if (selectedDisplay) {
+      drawSelectBox(selectedDisplay, selectedDisplayColor);
+    }
+
+    // draw operations list
+    sf::RectangleShape opListBg({(float)(width - opListX), (float)height});
+    opListBg.setPosition({(float)opListX, 0.f});
+    opListBg.setFillColor(sf::Color(220, 220, 220));
+    window.draw(opListBg);
     sf::Font &font = vobj::Display::getFont();
     sf::Text text(font);
     sf::Text locText(font);
@@ -60,10 +94,11 @@ namespace vcore {
     }
     for (size_t i = 0; i < ops.size(); ++i) {
       float y = opListYOff + i * textSpacing;
+      if (y + textSpacing < 0.f || y > (float)height) continue;
 
       // display background
       opBg.setPosition({(float)opListX, y});
-      opBg.setFillColor(i == currOp - 1 ? selectColor : normalColor);
+      opBg.setFillColor(i == currOp - 1 ? selectOpColor : i == hoverOp - 1 ? hoverOpColor : normalColor);
       window.draw(opBg);
 
       // display loc text

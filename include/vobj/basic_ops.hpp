@@ -54,16 +54,16 @@ namespace vobj {
       target->value = oldValue;
     }
 
-    void draw(sf::RenderTarget &t) override {
+    void draw(std::shared_ptr<vobj::RootDisplay> root, sf::RenderTarget &t) override {
       sf::IntRect bbox = target->getBBox();
       std::vector<sf::Vector2f> drawLocs;
       target->getGlobalDrawLocs(drawLocs);
       for (sf::Vector2f &pos : drawLocs) {
-        sf::RectangleShape rect({(float)bbox.size.x, (float)bbox.size.y});
-        rect.setPosition(pos);
+        sf::RectangleShape rect(static_cast<sf::Vector2f>(bbox.size) / root->camZoom);
+        rect.setPosition(root->world2screen(pos));
         rect.setFillColor(sf::Color::Transparent);
         rect.setOutlineColor(sf::Color::Red);
-        rect.setOutlineThickness(3.f);
+        rect.setOutlineThickness(3.f * (1.f / root->camZoom));
         t.draw(rect);
       }
     }

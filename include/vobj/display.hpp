@@ -49,7 +49,6 @@ namespace vobj {
     static uint64_t globalUpdateTick; // the current update tick to allow updating mark an object as updated this tick (incremented by Model)
     static uint64_t numAlive; // number of currently alive displays
     bool updated = false; // cached result of this tick's update call
-    sf::Vector2f rootPos; // position of element when it has no parent
 
     // MVC needs to access global ticks and font
     friend struct vcore::Model;
@@ -62,6 +61,9 @@ namespace vobj {
     std::string name; // name (set to init location by ConstructOp, can be modified with RenameOp)
     std::shared_ptr<Display> parent; // pointer to parent display, nullptr if none
     vstd::base *o; // pointer to vstd object this display represents, nullptr if none (raw pointer due to vstd not being created as a smart ptr)
+    sf::Vector2f pos; // position of element when it has no parent
+    bool needInitPos = true; // flag that tells root display to assign an initial position
+    int64_t priority = 0; // higher priority top level displays get prioritized during click and rendering
 
   protected:
 
@@ -70,7 +72,7 @@ namespace vobj {
     bool alive = false; // true if the object is alive by the current operation's completion
     uint64_t localDrawTick = 0; // if matches globalDrawTick this object has been rendered this tick
     uint64_t localUpdateTick = 0; // if matches globalUpdateTick this object has been updated this tick
-    std::deque<DrawDep> drawDeps; // draw locations, updated by drawOn calls
+    std::deque<DrawDep> drawDeps; // draw locations, updated by drawOn calls (note: top level displays handled separately and don't point to RootDisplay)
 
     // hide constructor so forced to use create
     Display();
