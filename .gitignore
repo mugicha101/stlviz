@@ -1,5 +1,6 @@
 build_windows
 build_linux
+build_macos
 out
 .cache
 .idea
