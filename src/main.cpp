@@ -4,6 +4,12 @@
 // debug program
 
 int main() {
+  vstd::set<int> s;
+  DEF(s);
+  s.insert(5);
+  s.insert(1);
+  s.insert(3);
+  s.erase(1);
   vstd::vector<int> vec(10, 8);
   DEF(vec);
   vec[1] = 0;

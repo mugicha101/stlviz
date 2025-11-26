@@ -14,6 +14,7 @@
 #include "vstd/merge_sort.hpp"
 #include "vstd/heap_sort.hpp"
 #include "vstd/quick_sort.hpp"
+#include "vstd/set.hpp"
 
 // map vstd class to vobj class at compile time
 namespace vobj {
@@ -31,6 +32,11 @@ namespace vobj {
     using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
   };
 
+  template <typename T, typename Compare>
+  struct BackingType<vstd::set<T, Compare>> {
+    using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
+  };
+  
   template<typename T>
   struct BackingType<vstd::binary_tree<T>> {
     using type = vobj::Tree<std::shared_ptr<typename BackingType<T>::type>>;
