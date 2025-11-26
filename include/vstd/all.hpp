@@ -15,6 +15,7 @@
 #include "vstd/heap_sort.hpp"
 #include "vstd/quick_sort.hpp"
 #include "vstd/set.hpp"
+#include "vstd/bitset.hpp"
 
 // map vstd class to vobj class at compile time
 namespace vobj {
@@ -36,7 +37,12 @@ namespace vobj {
   struct BackingType<vstd::set<T, Compare>> {
     using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
   };
-  
+
+  template <std::size_t N> 
+  struct BackingType<vstd::bitset<N>> {
+    using type = vobj::List<std::shared_ptr<typename BackingType<bool>::type>>;
+  };
+
   template<typename T>
   struct BackingType<vstd::binary_tree<T>> {
     using type = vobj::Tree<std::shared_ptr<typename BackingType<T>::type>>;
