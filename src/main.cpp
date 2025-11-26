@@ -16,7 +16,7 @@ int main() {
     vec2[i] = rand() % 100;
   }
   vec2.push_back(0);
-  vstd::heap_sort(vec2.begin(), vec2.end());
+  vstd::quick_sort(vec2.begin(), vec2.end());
 
   // // Stack demonstration
   // vstd::stack<int> s;

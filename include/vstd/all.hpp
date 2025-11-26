@@ -13,6 +13,7 @@
 #include "vstd/bubble_sort.hpp"
 #include "vstd/merge_sort.hpp"
 #include "vstd/heap_sort.hpp"
+#include "vstd/quick_sort.hpp"
 
 // map vstd class to vobj class at compile time
 namespace vobj {
