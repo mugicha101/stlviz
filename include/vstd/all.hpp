@@ -5,6 +5,8 @@
 #include "vstd/vector.hpp"
 #include "vstd/stack.hpp"
 #include "vstd/deque.hpp"
+#include "vstd/binary_tree.hpp"
+#include "vstd/binary_search_tree.hpp"
 #include "vobj/backing_type.hpp"
 
 // map vstd class to vobj class at compile time
@@ -18,9 +20,19 @@ namespace vobj {
   struct BackingType<vstd::stack<T, Container>> {
     using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
   };
-  template <typename T> 
+  template <typename T>
   struct BackingType<vstd::deque<T>> {
     using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
+  };
+
+  template<typename T>
+  struct BackingType<vstd::binary_tree<T>> {
+    using type = vobj::Tree<std::shared_ptr<typename BackingType<T>::type>>;
+  };
+
+  template<typename T>
+  struct BackingType<vstd::binary_search_tree<T>> {
+    using type = vobj::Tree<std::shared_ptr<typename BackingType<T>::type>>;
   };
 }
 

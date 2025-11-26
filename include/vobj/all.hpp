@@ -8,3 +8,4 @@
 #include "vobj/backing_type.hpp"
 #include "vobj/basic_ops.hpp"
 #include "vobj/list.hpp"
+#include "vobj/tree.hpp"
