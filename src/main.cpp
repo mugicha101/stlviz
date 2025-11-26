@@ -10,6 +10,7 @@ int main() {
   s.insert(1);
   s.insert(3);
   s.erase(1);
+  s.clear();
   vstd::vector<int> vec(10, 8);
   DEF(vec);
   vec[1] = 0;

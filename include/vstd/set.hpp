@@ -96,6 +96,12 @@ public:
     OP("set erase", count = SUPER::erase(key); if (count) rebuild(op);)
     return count;
   }
+  void clear(SLOC) {
+    OP("set clear",
+      SUPER::clear();
+      rebuild(op);
+    )
+  }
 };
 
 } // namespace vstd
