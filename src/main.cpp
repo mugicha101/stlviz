@@ -4,20 +4,19 @@
 // debug program
 
 int main() {
-  // vstd::vector<int> vec(5, 0);
-  // DEF(vec);
-  // vec[0] = 5;
-  // vec[1] = 3;
-  // vec[2] = 8;
-  // vec[3] = 1;
-  // vec[4] = 9;
+  vstd::vector<int> vec(10, 8);
+  DEF(vec);
+  vec[1] = 0;
+  vec.push_back(10);
+  std::iota(vec.begin(), vec.end(), 0);
+  vec.pop_back();
 
-  // vstd::vector<int> vec2(20);
-  // for (int i = 0; i < vec2.size(); ++i) {
-  //   vec2[i] = rand() % 100;
-  // }
-  // vec2.push_back(0);
-  // sort(vec2.begin(), vec2.end());
+  vstd::vector<int> vec2(10);
+  for (int i = 0; i < vec2.size(); ++i) {
+    vec2[i] = rand() % 100;
+  }
+  vec2.push_back(0);
+  vstd::quick_sort(vec2.begin(), vec2.end());
 
   // // Stack demonstration
   // vstd::stack<int> s;

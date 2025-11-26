@@ -8,6 +8,12 @@
 #include "vstd/binary_tree.hpp"
 #include "vstd/binary_search_tree.hpp"
 #include "vobj/backing_type.hpp"
+#include "vstd/insertion_sort.hpp"
+#include "vstd/selection_sort.hpp"
+#include "vstd/bubble_sort.hpp"
+#include "vstd/merge_sort.hpp"
+#include "vstd/heap_sort.hpp"
+#include "vstd/quick_sort.hpp"
 
 // map vstd class to vobj class at compile time
 namespace vobj {
