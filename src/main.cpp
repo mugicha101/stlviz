@@ -4,6 +4,28 @@
 // debug program
 
 int main() {
+  vstd::bitset<8> a, b, c;
+  DEF(a);
+  DEF(b);
+  DEF(c);
+
+  a.set(0);
+  a.set(2);
+  a.set(4);
+  b.set(1);
+  b.set(2);
+  b.set(3);
+
+  for (std::size_t i = 0; i < c.size(); ++i) {
+    c.set(i, a.test(i) && b.test(i));
+  }
+  vstd::set<int> s;
+  DEF(s);
+  s.insert(5);
+  s.insert(1);
+  s.insert(3);
+  s.erase(1);
+  s.clear();
   vstd::vector<int> vec(10, 8);
   DEF(vec);
   vec[1] = 0;
