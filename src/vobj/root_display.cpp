@@ -1,4 +1,6 @@
 #include "vobj/root_display.hpp"
+#include "vstd/base.hpp"
+#include "vobj/primitive.hpp"
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -156,7 +158,19 @@ namespace vobj {
       if (d->parent || !d->isAlive() || d.get() == this) continue;
 
       std::cout << "UPDATE TOP LEVEL " << d->uid << std::endl;
-      d->update(op);
+      std::cout << "[DEBUG] typeid(*d).name() = " << typeid(*d).name() << std::endl;
+      std::cout << d.get() << std::endl;
+      if (auto p = std::dynamic_pointer_cast<PrimitiveBase>(d)) {
+        std::cout << "A" << std::endl;
+        std::cout << p << std::endl;
+        std::cout << reinterpret_cast<void*>(p->o) << std::endl;
+        // if (!p || reinterpret_cast<void*>(p->o) == nullptr) ERR("PRIMITIVE WRAPPER " + std::to_string(d->uid) + "NOT MAPPED TO OBJECT");
+        // std::cout << reinterpret_cast<void*>(p->o) << std::endl;
+        p->o->_vstd_update_values(op);
+      } else {
+        std::cout << "B" << std::endl;
+        d->update(op);
+      }
     }
     return false;
   }

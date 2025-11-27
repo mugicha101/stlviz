@@ -8,11 +8,11 @@ namespace vobj {
     
   }
 
-  Operation::Operation(size_t oid, uint64_t line, uint64_t offset, std::string content) : Operation(oid, line, offset, line, offset, content) {
+  Operation::Operation(size_t oid, uint64_t line, uint64_t offset, const char *fileName, std::string content) : Operation(oid, line, offset, fileName, line, offset, fileName, content) {
     
   }
 
-  Operation::Operation(size_t oid, uint64_t startLine, uint64_t startOffset, uint64_t endLine, uint64_t endOffset, std::string content) : oid(oid), startLine(startLine), startOffset(startOffset), endLine(endLine), endOffset(endOffset), content(content) {
+  Operation::Operation(size_t oid, uint64_t startLine, uint64_t startOffset, const char *startFileName, uint64_t endLine, uint64_t endOffset, const char *endFileName, std::string content) : oid(oid), startLine(startLine), startOffset(startOffset), startFileName(startFileName), endLine(endLine), endOffset(endOffset), endFileName(endFileName), content(content) {
     
   }
 

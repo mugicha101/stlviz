@@ -10,6 +10,7 @@ namespace vcore {
     std::deque<vobj::Operation> ops;
     uint64_t lastUpdateLine = 0;
     uint64_t lastUpdateOffset = 0;
+    const char *lastUpdatedFileName = "";
     
     Model();
 
@@ -18,6 +19,7 @@ namespace vcore {
 
     // update all vobjs to check for changed values
     // if values changed, add operation with these value changes
-    void update(std::source_location sloc);
+    // return true if updated
+    bool update(std::source_location sloc);
   };
 }

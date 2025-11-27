@@ -9,9 +9,9 @@
 #define CONTROLLER vcore::Controller::globalController()
 #define MODEL CONTROLLER.model
 #define VIEW CONTROLLER.view
-#define SPIN CONTROLLER.spin();
-#define UPDATE CONTROLLER.update(sloc);
-#define OP(content, body) UPDATE; vobj::Operation &op = MODEL.addOp(sloc, content); body; SPIN
+#define SPIN CONTROLLER.spin()
+#define UPDATE CONTROLLER.update(sloc)
+#define OP(content, body) UPDATE; vobj::Operation &op = MODEL.addOp(sloc, content); body; SPIN;
 #define FONT_SIZE 32
 #define OP_FONT_SIZE 16
 #define ERR(msg) std::cerr << msg << std::endl; throw std::runtime_error(msg)
@@ -60,7 +60,7 @@ namespace vobj {
     size_t uid = SIZE_MAX;
     std::string name; // name (set to init location by ConstructOp, can be modified with RenameOp)
     std::shared_ptr<Display> parent; // pointer to parent display, nullptr if none
-    vstd::base *o; // pointer to vstd object this display represents, nullptr if none (raw pointer due to vstd not being created as a smart ptr)
+    vstd::base *o = nullptr; // pointer to vstd object this display represents, nullptr if none (raw pointer due to vstd not being created as a smart ptr)
     sf::Vector2f pos; // position of element when it has no parent
     bool needInitPos = true; // flag that tells root display to assign an initial position
     int64_t priority = 0; // higher priority top level displays get prioritized during click and rendering

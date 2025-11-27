@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vobj/display.hpp"
+#include "vobj/operation.hpp"
 #include <iostream>
 #include <string>
 #include <cmath>
@@ -9,9 +10,18 @@ namespace vobj {
   template<typename T>
   struct AssignOp;
 
+  // parent class of primitive to allow for runtime detection for primitives
+  struct PrimitiveBase : public Display {
+    // override update since no vstd::base
+    // assignment of latest should be considered in parent by calling update(op, realLatest)
+    virtual bool update(Operation &op) override {
+      ERR("Primitive<T>::update(op) should not be called directly, Primitive<T>::update(op, val) instead!");
+    }
+  };
+
   // backing class of primitive values
   template<typename T>
-  struct Primitive : public Display {
+  struct Primitive : public PrimitiveBase {
     T value{}; // represents value at current operation
     T latest{}; // represents actual value in main thread
 
@@ -23,14 +33,6 @@ protected:
     FRIEND_CREATE
 
 public:
-
-    ~Primitive() {}
-
-    // override update since no vstd::base
-    // assignment of latest should be considered in parent by calling update(op, realLatest)
-    virtual bool update(Operation &op) override {
-      ERR("Primitive<T>::update(op) should not be called directly, Primitive<T>::update(op, val) instead!");
-    }
 
     bool update(Operation &op, T realLatest) {
       if (localUpdateTick == globalUpdateTick) return updated;

@@ -243,7 +243,7 @@ namespace vcore {
       text.setString(ops[i].content);
       window.draw(text);
     }
-    uint64_t opListHeight = std::max({1ULL, height, (uint64_t)ops.size() * textSpacing});
+    uint64_t opListHeight = std::max({(uint64_t)1, height, (uint64_t)ops.size() * textSpacing});
     float scrollBarScale = (float)height / (float)opListHeight;
     sf::RectangleShape opListScrollBar;
     opListScrollBar.setSize({3.f, (float)height});

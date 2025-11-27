@@ -10,7 +10,7 @@ namespace vstd {
     virtual bool _vstd_update_values(vobj::Operation &op) = 0;
 
     friend struct vobj::Display;
-
+    friend vobj::RootDisplay;
   public:
 
     // give custom name to this object

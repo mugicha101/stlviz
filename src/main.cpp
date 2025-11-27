@@ -73,6 +73,20 @@ int main() {
   dq.pop_front();
   dq.pop_back();
 
+  vstd::Int ia = 5;
+  DEF(ia);
+  vstd::Int ib = ia;
+  DEF(ib);
+  ia = 10;
+  ia += 10;
+  vstd::Int ic = std::move(ia);
+  ia = 3;
+  DEF(c);
+  ic = ib * 2 + 15;
+  ++ia;
+  ic = ia++;
+  ic += ia;
+
   // Binary search tree demonstration
   vstd::binary_search_tree<int> bst;
   DEF(bst);
@@ -96,5 +110,5 @@ int main() {
 
   MAIN_DONE();
 
-  _Exit(0);
+  // _Exit(0);
 }

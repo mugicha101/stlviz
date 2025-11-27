@@ -109,8 +109,8 @@ namespace vcore {
     }
   }
 
-  void Controller::update(std::source_location sloc) {
-    model.update(sloc);
+  bool Controller::update(std::source_location sloc) {
+    return model.update(sloc);
   }
 
   void Controller::step(long long amount) {
