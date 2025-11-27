@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vobj/display.hpp"
+#include <functional>
 
 namespace vobj {
   // singleton root display, holds all displays not within another display
@@ -13,12 +14,14 @@ namespace vobj {
 
     // gets alive top level displays in ascending priority order (tie break by uid)
     std::vector<std::shared_ptr<Display>> topLevelDisplays() const;
+    std::vector<std::shared_ptr<Display>> topLevelDisplays(std::function<bool(std::shared_ptr<Display>)> filter) const;
 
   public:
 
     sf::Vector2i size{800, 600}; // canvas size (should match screen size)
-    sf::Vector2f camPosition{-10.f, -30.f}; // position of camera
+    sf::Vector2f camPosition{0.f, 0.f}; // position of camera (world coordinates at top-left of screen)
     float camZoom = 1.f; // zoom level of camera
+    std::function<bool(std::shared_ptr<Display>)> displayFilter = nullptr; // optional filter for which displays to show
 
     // draw all displays recursively
     // each call to this represents a draw tick (increments globalDrawTick)

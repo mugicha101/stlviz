@@ -1,10 +1,71 @@
 #include <vcore/all.hpp>
+#include <vstd/base.hpp>
 #include <iostream>
 
 namespace vcore {
   View::View(uint32_t width, uint32_t height) {
     window.create(sf::VideoMode({width, height}), "STLVIZ");
     window.setFramerateLimit(60);
+    initializeTabs();
+  }
+
+  void View::initializeTabs() {
+    // "All" tab - shows everything
+    tabs.emplace_back("All", [](std::shared_ptr<vobj::Display> d) {
+      return true;
+    });
+
+    // "Vectors" tab - shows only vector displays
+    tabs.emplace_back("Vectors", [](std::shared_ptr<vobj::Display> d) {
+      if (!d->o) return false;
+      std::string typeName = d->o->_vstd_type_name();
+      return typeName.find("vector") != std::string::npos;
+    });
+
+    // "Stacks" tab
+    tabs.emplace_back("Stacks", [](std::shared_ptr<vobj::Display> d) {
+      if (!d->o) return false;
+      std::string typeName = d->o->_vstd_type_name();
+      return typeName.find("stack") != std::string::npos;
+    });
+
+    // "Deques" tab
+    tabs.emplace_back("Deques", [](std::shared_ptr<vobj::Display> d) {
+      if (!d->o) return false;
+      std::string typeName = d->o->_vstd_type_name();
+      return typeName.find("deque") != std::string::npos;
+    });
+
+    // "Trees" tab - shows tree and BST structures
+    tabs.emplace_back("Trees", [](std::shared_ptr<vobj::Display> d) {
+      if (!d->o) return false;
+      std::string typeName = d->o->_vstd_type_name();
+      return typeName.find("tree") != std::string::npos ||
+             typeName.find("binary") != std::string::npos;
+    });
+
+    // "Sets" tab
+    tabs.emplace_back("Sets", [](std::shared_ptr<vobj::Display> d) {
+      if (!d->o) return false;
+      std::string typeName = d->o->_vstd_type_name();
+      return typeName.find("set") != std::string::npos ||
+             typeName.find("bitset") != std::string::npos;
+    });
+  }
+
+  int View::tabBarHover(float mx, float my) const {
+    if (my >= tabBarHeight) return -1;
+
+    const float tabWidth = 120.f;
+    const float tabSpacing = 5.f;
+
+    for (size_t i = 0; i < tabs.size(); ++i) {
+      float tabX = tabSpacing + i * (tabWidth + tabSpacing);
+      if (mx >= tabX && mx < tabX + tabWidth) {
+        return (int)i;
+      }
+    }
+    return -1;
   }
 
   void View::update(vcore::Controller &controller) {
@@ -15,12 +76,21 @@ namespace vcore {
       window.display();
       return;
     }
+
+    // Apply the active tab's filter to the root display
+    if (activeTabIndex < tabs.size()) {
+      root_display->displayFilter = tabs[activeTabIndex].filter;
+    }
+
     root_display->size = static_cast<sf::Vector2i>(window.getSize());
     auto mousePos = controller.mousePos;
-    auto mouseWorldPos = root_display->screen2world(mousePos);
+    // Adjust mouse position for tab bar offset
+    sf::Vector2f adjustedMousePos = {mousePos.x, mousePos.y - (float)tabBarHeight};
+    auto mouseWorldPos = root_display->screen2world(adjustedMousePos);
     auto &ops = controller.model.ops;
     auto currOp = controller.currOp;
     auto hoverOp = opListHover(mousePos.x, mousePos.y);
+    auto hoverTab = tabBarHover(mousePos.x, mousePos.y);
     auto selectedDisplay = controller.selectedDisplay;
     auto hoveredDisplay = root_display->at(mouseWorldPos);
     
@@ -41,8 +111,62 @@ namespace vcore {
     uint64_t height = window.getSize().y;
     opListX = width * 3u / 4u;
     root_display->size.x = opListX;
-    root_display->size.y = height;
-    root_display->drawOn(window, 0.f, 0.f);
+    root_display->size.y = height - tabBarHeight;
+
+    // Draw tab bar
+    const float tabSpacing = 5.f;
+    const float tabHeight = (float)tabBarHeight - 5.f;
+
+    // Calculate dynamic tab width to fit all tabs on screen
+    // Reserve space for operation list (25% of screen width)
+    float availableWidth = opListX - tabSpacing * 2.f; // Account for spacing on both sides
+    float tabWidth = (availableWidth - tabSpacing * (tabs.size() - 1)) / (float)tabs.size();
+
+    // Ensure minimum tab width for readability
+    const float minTabWidth = 80.f;
+    const float maxTabWidth = 150.f;
+    tabWidth = std::max(minTabWidth, std::min(maxTabWidth, tabWidth));
+
+    sf::Font &font = vobj::Display::getFont();
+    const uint32_t tabFontSize = 16; // Consistent font size for all tabs
+
+    for (size_t i = 0; i < tabs.size(); ++i) {
+      float tabX = tabSpacing + i * (tabWidth + tabSpacing);
+
+      // Tab background
+      sf::RectangleShape tabBg({tabWidth, tabHeight});
+      tabBg.setPosition({tabX, 5.f});
+
+      if (i == activeTabIndex) {
+        tabBg.setFillColor(sf::Color(100, 150, 255)); // Active tab color
+        tabBg.setOutlineThickness(-2.f);
+        tabBg.setOutlineColor(sf::Color(50, 100, 200));
+      } else if (hoverTab == (int)i) {
+        tabBg.setFillColor(sf::Color(180, 200, 255)); // Hover tab color
+      } else {
+        tabBg.setFillColor(sf::Color(220, 220, 220)); // Inactive tab color
+      }
+
+      window.draw(tabBg);
+
+      // Tab text
+      sf::Text tabText(font);
+      tabText.setString(tabs[i].name);
+      tabText.setCharacterSize(tabFontSize);
+      tabText.setFillColor(i == activeTabIndex ? sf::Color::White : sf::Color::Black);
+
+      // Center text in tab
+      sf::FloatRect textBounds = tabText.getLocalBounds();
+      tabText.setPosition({
+        tabX + (tabWidth - textBounds.size.x) / 2.f - textBounds.position.x,
+        10.f + (tabHeight - textBounds.size.y) / 2.f - textBounds.position.y
+      });
+
+      window.draw(tabText);
+    }
+
+    // Draw data view below tab bar
+    root_display->drawOn(window, 0.f, (float)tabBarHeight);
 
     // draw last operation to window
     if (currOp > 0) ops[currOp-1].draw(root_display, window);
@@ -70,7 +194,6 @@ namespace vcore {
     opListBg.setPosition({(float)opListX, 0.f});
     opListBg.setFillColor(sf::Color(220, 220, 220));
     window.draw(opListBg);
-    sf::Font &font = vobj::Display::getFont();
     sf::Text text(font);
     sf::Text locText(font);
     uint64_t textSpacing = font.getLineSpacing(OP_FONT_SIZE);

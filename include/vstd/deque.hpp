@@ -71,6 +71,9 @@ public:
                            bo, bo->name, name));)
   }
 
+  std::string _vstd_type_name() const override {
+    return "deque";
+  }
 
   deque(SLOC) : SUPER() { init_helper(sloc); }
 

@@ -49,6 +49,10 @@ public:
                             bo, bo->name, name));)
   }
 
+  std::string _vstd_type_name() const override {
+    return "bitset";
+  }
+
   bitset(SLOC) : SUPER() { init_helper(sloc); }
   bitset(const bitset &other, SLOC) : SUPER(other) { init_helper(sloc); }
   bitset(bitset &&other, SLOC) noexcept : SUPER(std::move(other)) {

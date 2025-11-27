@@ -60,7 +60,10 @@ namespace vobj {
       target->getGlobalDrawLocs(drawLocs);
       for (sf::Vector2f &pos : drawLocs) {
         sf::RectangleShape rect(static_cast<sf::Vector2f>(bbox.size) / root->camZoom);
-        rect.setPosition(root->world2screen(pos));
+        sf::Vector2f screenPos = root->world2screen(pos);
+        // Account for tab bar offset - data view is drawn below the tab bar
+        screenPos.y += 40.f; // tabBarHeight
+        rect.setPosition(screenPos);
         rect.setFillColor(sf::Color::Transparent);
         rect.setOutlineColor(sf::Color::Red);
         rect.setOutlineThickness(3.f * (1.f / root->camZoom));

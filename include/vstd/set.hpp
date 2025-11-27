@@ -52,6 +52,10 @@ public:
                          std::make_unique<vobj::RenameOp>(bo, bo->name, name));)
   }
 
+  std::string _vstd_type_name() const override {
+    return "set";
+  }
+
   set(SLOC) : SUPER() { init_helper(sloc); }
 
   set(const set &other, SLOC) : SUPER(other) { init_helper(sloc); }

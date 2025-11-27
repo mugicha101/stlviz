@@ -60,6 +60,10 @@ namespace vstd {
       )
     }
 
+    std::string _vstd_type_name() const override {
+      return "stack";
+    }
+
     // Constructors
     stack(SLOC) {
       init_helper(sloc);

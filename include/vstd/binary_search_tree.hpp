@@ -163,6 +163,10 @@ namespace vstd {
       )
     }
 
+    std::string _vstd_type_name() const override {
+      return "binary_search_tree";
+    }
+
     // Constructor
     binary_search_tree(SLOC) : root(nullptr) {
       init_helper(sloc);

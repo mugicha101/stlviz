@@ -120,6 +120,10 @@ namespace vstd {
       )
     }
 
+    std::string _vstd_type_name() const override {
+      return "binary_tree";
+    }
+
     // Constructor
     binary_tree(SLOC) : root(nullptr) {
       init_helper(sloc);

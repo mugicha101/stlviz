@@ -44,6 +44,39 @@ namespace vcore {
             case Key::Left:
               step(-1);
               break;
+            // Tab navigation with number keys
+            case Key::Num1:
+              if (view.tabs.size() >= 1) view.activeTabIndex = 0;
+              break;
+            case Key::Num2:
+              if (view.tabs.size() >= 2) view.activeTabIndex = 1;
+              break;
+            case Key::Num3:
+              if (view.tabs.size() >= 3) view.activeTabIndex = 2;
+              break;
+            case Key::Num4:
+              if (view.tabs.size() >= 4) view.activeTabIndex = 3;
+              break;
+            case Key::Num5:
+              if (view.tabs.size() >= 5) view.activeTabIndex = 4;
+              break;
+            case Key::Num6:
+              if (view.tabs.size() >= 6) view.activeTabIndex = 5;
+              break;
+            // Tab/Shift+Tab for next/previous tab
+            case Key::Tab:
+              if (keyPressed->shift) {
+                // Previous tab
+                if (view.activeTabIndex > 0) {
+                  view.activeTabIndex--;
+                } else {
+                  view.activeTabIndex = view.tabs.size() - 1;
+                }
+              } else {
+                // Next tab
+                view.activeTabIndex = (view.activeTabIndex + 1) % view.tabs.size();
+              }
+              break;
             default:
               break;
           }
@@ -98,11 +131,20 @@ namespace vcore {
     if (mousePressed) return;
     mousePressed = true;
 
+    // Check if clicking on a tab
+    int selectedTab = view.tabBarHover(mousePos.x, mousePos.y);
+    if (selectedTab >= 0) {
+      view.activeTabIndex = (size_t)selectedTab;
+      return;
+    }
+
     int selectedOp = view.opListHover(mousePos.x, mousePos.y);
     if (selectedOp >= 0) {
       jump((size_t)selectedOp);
     } else {
-      selectedDisplay = model.root->at(model.root->screen2world(mousePos));
+      // Adjust mouse position for tab bar offset
+      sf::Vector2f adjustedMousePos = {mousePos.x, mousePos.y - (float)view.tabBarHeight};
+      selectedDisplay = model.root->at(model.root->screen2world(adjustedMousePos));
       if (selectedDisplay) selectedDisplay->priority = vobj::Display::globalDrawTick;
     }
   }
@@ -118,8 +160,11 @@ namespace vcore {
         selectedDisplay->pos.x += (x - mousePos.x) * model.root->camZoom;
         selectedDisplay->pos.y += (y - mousePos.y) * model.root->camZoom;
       } else {
-        sf::Vector2f oldMouseWorldPos = model.root->screen2world(mousePos);
-        sf::Vector2f newMouseWorldPos = model.root->screen2world({x, y});
+        // Adjust for tab bar offset
+        sf::Vector2f oldAdjustedPos = {mousePos.x, mousePos.y - (float)view.tabBarHeight};
+        sf::Vector2f newAdjustedPos = {x, y - (float)view.tabBarHeight};
+        sf::Vector2f oldMouseWorldPos = model.root->screen2world(oldAdjustedPos);
+        sf::Vector2f newMouseWorldPos = model.root->screen2world(newAdjustedPos);
         model.root->camPosition -= newMouseWorldPos - oldMouseWorldPos;
       }
     }

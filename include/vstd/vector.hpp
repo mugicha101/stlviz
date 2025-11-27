@@ -72,6 +72,10 @@ namespace vstd {
       )
     }
 
+    std::string _vstd_type_name() const override {
+      return "vector";
+    }
+
     vector(SLOC) : SUPER() {
       init_helper(sloc);
     }

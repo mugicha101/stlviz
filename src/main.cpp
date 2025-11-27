@@ -4,6 +4,7 @@
 // debug program
 
 int main() {
+  // Bitset demonstration
   vstd::bitset<8> a, b, c;
   DEF(a);
   DEF(b);
@@ -19,6 +20,8 @@ int main() {
   for (std::size_t i = 0; i < c.size(); ++i) {
     c.set(i, a.test(i) && b.test(i));
   }
+
+  // Set demonstration
   vstd::set<int> s;
   DEF(s);
   s.insert(5);
@@ -26,49 +29,51 @@ int main() {
   s.insert(3);
   s.erase(1);
   s.clear();
-  vstd::vector<int> vec(10, 8);
-  DEF(vec);
-  vec[1] = 0;
-  vec.push_back(10);
-  std::iota(vec.begin(), vec.end(), 0);
-  vec.pop_back();
 
-  vstd::vector<int> vec2(10);
+  // Vector demonstrations
+  vstd::vector<int> vec(5, 0);
+  DEF(vec);
+  vec[0] = 5;
+  vec[1] = 3;
+  vec[2] = 8;
+  vec[3] = 1;
+  vec[4] = 9;
+
+  vstd::vector<int> vec2(20);
   for (int i = 0; i < vec2.size(); ++i) {
     vec2[i] = rand() % 100;
   }
   vec2.push_back(0);
   vstd::quick_sort(vec2.begin(), vec2.end());
 
-  // // Stack demonstration
-  // vstd::stack<int> s;
-  // DEF(s);
-  // s.push(10);
-  // s.push(20);
-  // s.push(30);
-  // s.push(40);
-  // s.pop();
-  // s.pop();
-  // s.push(50);
+  // Stack demonstration
+  vstd::stack<int> stk;
+  DEF(stk);
+  stk.push(10);
+  stk.push(20);
+  stk.push(30);
+  stk.push(40);
+  stk.pop();
+  stk.pop();
+  stk.push(50);
 
+  for (int i = 0; i < 10; ++i) {
+    if (!vec.empty()) vec[rand() % vec.size()] = rand() % 100;
+    if (vec.empty() || rand() % 2) vec.push_back(rand() % 100);
+    else vec.pop_back();
+  }
 
-  // for (int i = 0; i < 10; ++i) {
-  //   if (!vec.empty()) vec[rand() % vec.size()] = rand() % 100;
-  //   if (vec.empty() || rand() % 2) vec.push_back(rand() % 100);
-  //   else vec.pop_back();
-  // }
+  // Deque demonstration
+  vstd::deque<int> dq;
+  DEF(dq);
+  dq.push_back(4);
+  dq.push_back(20);
+  dq.push_front(10);
+  dq.pop_back();
+  dq.pop_front();
+  dq.pop_back();
 
-  // // for (int i = 0; i < 1000; ++i) vec.push_back(i);
-
-  // vstd::deque<int> dq;
-  // DEF(dq);
-  // dq.push_back(4);
-  // dq.push_back(20);
-  // dq.push_front(10);
-  // dq.pop_back();
-  // dq.pop_front();
-  // dq.pop_back();
-
+  // Binary search tree demonstration
   vstd::binary_search_tree<int> bst;
   DEF(bst);
   bst.insert(1);
@@ -78,7 +83,7 @@ int main() {
   bst.insert(5);
   bst.insert(6);
 
-  // binary tree 
+  // Binary tree demonstration
   vstd::binary_tree<int> bt;
   DEF(bt);
   bt.setRoot(1);

@@ -15,5 +15,8 @@ namespace vstd {
 
     // give custom name to this object
     virtual void _vstd_rename(std::string name, SLOC) = 0;
+
+    // get type name of this vstd object
+    virtual std::string _vstd_type_name() const = 0;
   };
 }
