@@ -12,6 +12,7 @@
 #define SPIN CONTROLLER.spin()
 #define UPDATE CONTROLLER.update(sloc)
 #define OP(content, body) UPDATE; vobj::Operation &op = MODEL.addOp(sloc, content); body; SPIN;
+#define SMALL_FONT_SIZE 16
 #define FONT_SIZE 32
 #define OP_FONT_SIZE 16
 #define ERR(msg) std::cerr << msg << std::endl; throw std::runtime_error(msg)
