@@ -178,7 +178,7 @@ namespace vcore {
       selectBox.setOutlineThickness(3.f);
       sf::FloatRect bbox = static_cast<sf::FloatRect>(display->getBBox());
       selectBox.setSize(bbox.size / root_display->camZoom);
-      selectBox.setPosition(root_display->world2screen(display->pos + bbox.position));
+      selectBox.setPosition(root_display->world2screen(display->pos + bbox.position) + sf::Vector2f{0.f, (float)tabBarHeight});
       selectBox.setOutlineColor(color);
       window.draw(selectBox);
     };

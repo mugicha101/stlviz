@@ -24,6 +24,10 @@ namespace vstd {
 
   public:
 
+    std::string _vstd_type_name() const override {
+      return "NumWrapper<" + std::string(name()) + ">";
+    }
+
     operator T() const { return value; }
     NumWrapper(T v, SLOC) : value(v) {
       std::cout << "PRIMITIVE WRAPPER INIT AT " << sloc.line() << std::endl;
@@ -68,10 +72,10 @@ namespace vstd {
     NumWrapper &operator--() { --value; return *this; }
 
     template<typename U = T, typename = std::enable_if_t<std::is_integral<U>::value>>
-    NumWrapper operator++(int) { return NumWrapper(value++, NULL_SLOC); }
+    NumWrapper operator++(int) { return NumWrapper(value++); }
 
     template<typename U = T, typename = std::enable_if_t<std::is_integral<U>::value>>
-    NumWrapper operator--(int) { return NumWrapper(value--, NULL_SLOC); }
+    NumWrapper operator--(int) { return NumWrapper(value--); }
 
     template<typename U = T, typename = std::enable_if_t<std::is_integral<U>::value>>
     NumWrapper &operator&=(T v) { value &= v; return *this; } 

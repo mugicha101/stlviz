@@ -3,6 +3,16 @@
 
 // debug program
 
+void dfs(vstd::vector<int> &arr) {
+  if (arr.size() <= 1) return;
+
+  size_t m = arr.size() >> 1;
+  vstd::vector<int> left(m);
+  vstd::vector<int> right(arr.size()-m);
+  dfs(left);
+  dfs(right);
+}
+
 int main() {
   // Bitset demonstration
   vstd::bitset<8> a, b, c;
@@ -45,6 +55,8 @@ int main() {
   }
   vec2.push_back(0);
   vstd::quick_sort(vec2.begin(), vec2.end());
+
+  dfs(vec2);
 
   // Stack demonstration
   vstd::stack<int> stk;
