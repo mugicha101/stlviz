@@ -27,7 +27,7 @@ namespace vobj {
 
 protected:
 
-    Primitive() : Display() {}
+    Primitive() : PrimitiveBase() {}
     Primitive(T v) : value(v), latest(v) {}
 
     FRIEND_CREATE
