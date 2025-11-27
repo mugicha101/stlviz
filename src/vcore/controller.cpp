@@ -27,12 +27,6 @@ namespace vcore {
     };
     updateCurrOp();
     bool indefiniteWait = mainDone && vobj::Display::getNumAlive() == 0;
-    std::cout << vobj::Display::getNumAlive() << std::endl;
-    if (vobj::Display::getNumAlive() == 24) {
-      for (auto d : vobj::Display::displays) {
-        if (d->isAlive() && d->o) std::cout << typeid(d->o).name() << std::endl;
-      }
-    }
     while (view.window.isOpen() && (indefiniteWait || targetOp <= model.ops.size())) {
       while (const std::optional event = view.window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {

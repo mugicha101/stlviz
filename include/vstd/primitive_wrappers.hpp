@@ -25,7 +25,7 @@ namespace vstd {
   public:
 
     std::string _vstd_type_name() const override {
-      return "NumWrapper<" + std::string(name()) + ">";
+      return "NumWrapper";
     }
 
     operator T() const { return value; }
