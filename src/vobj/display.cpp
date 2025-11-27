@@ -115,8 +115,13 @@ namespace vobj {
   void Display::setAlive(bool alive) {
     if (this->alive == alive) return;
 
+    std::cout << uid << " ";
+    if (alive) std::cout << "ALIVE";
+    else std::cout << "DEAD";
+
     this->alive = alive;
     numAlive += alive ? 1 : -1;
+    std::cout << " total: " << numAlive << std::endl;
   }
 
   bool Display::isAlive() const {

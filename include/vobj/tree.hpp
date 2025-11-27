@@ -6,6 +6,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <queue>
 
 namespace vobj {
   template<typename T>
@@ -167,6 +168,7 @@ namespace vobj {
           node->parent = parent;
         }
         node->setAlive(true);
+        if (node->element) node->element->setAlive(true); // TODO: ensure this is the only place setting element alive state
       }
 
       void undo() override {
@@ -196,6 +198,7 @@ namespace vobj {
           node->parent = nullptr;
         }
         node->setAlive(false);
+        if (node->element) node->element->setAlive(false); // TODO: ensure this is the only place setting element alive state
       }
     };
 
@@ -213,6 +216,27 @@ namespace vobj {
         AddNodeOp::apply();
       }
     };
+
+    // clear all nodes
+    void clear(Operation &op) {
+      if (!root) return;
+
+      std::queue<std::shared_ptr<TreeNode<T>>> q;
+      removeNode(op, nullptr, root, false);
+      q.push(root);
+      while (!q.empty()) {
+        std::shared_ptr<TreeNode<T>> node = q.front();
+        q.pop();
+        if (node->leftChild) {
+          removeNode(op, node, node->leftChild, true);
+          q.push(node->leftChild);
+        }
+        if (node->rightChild) {
+          removeNode(op, node, node->rightChild, false);
+          q.push(node->rightChild);
+        }
+      }
+    }
 
   protected:
     Tree() : Display() {

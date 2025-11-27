@@ -7,11 +7,13 @@
 
 // define major operator component types
 namespace vobj {
+  std::string genDefaultName(std::shared_ptr<vobj::Display> target, std::source_location sloc);
+
   // create a new object
   struct ConstructOp : public OpComp {
     std::shared_ptr<Display> target;
     std::string defaultName;
-    ConstructOp(std::shared_ptr<Display> target, std::source_location sloc) : target(target), defaultName(std::to_string(sloc.line()) + ":" + std::to_string(sloc.column())) {}
+    ConstructOp(std::shared_ptr<Display> target, std::source_location sloc) : target(target), defaultName(genDefaultName(target, sloc)) {}
     void apply() override;
     void undo() override;
   };

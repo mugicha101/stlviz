@@ -79,6 +79,12 @@ namespace vobj {
     void draw() override {
       const int cellPadding = 5;
       const int cellBorder = 2;
+      sf::Font &font = Display::getFont();
+      float charWidth = font.getGlyph('0', SMALL_FONT_SIZE, false).advance;
+      sf::Text indexText(font);
+      indexText.setCharacterSize(SMALL_FONT_SIZE);
+      uint32_t indexHeight = font.getLineSpacing(SMALL_FONT_SIZE);
+      indexText.setFillColor(sf::Color::Red);
 
       if (elements.empty()) {
         // draw empty set symbol
@@ -115,23 +121,32 @@ namespace vobj {
       }
 
       int margin = (cellBorder + cellPadding) * 2;
-      height += margin;
+      height += margin + indexHeight;
 
       resetCanvas(width, height);
-      sf::RectangleShape bg({(float)width, (float)height});
+      sf::RectangleShape bg({(float)width, (float)(height - indexHeight)});
       bg.setFillColor(sf::Color(255, 255, 255));
       canvas.draw(bg);
 
       int x = cellBorder;
       for (auto &[i, e] : elements) {
+        // draw element
         auto bbox = e->getBBox();
-        e->drawOn(canvas, (float)(x + cellPadding), (float)(height - bbox.size.y) * 0.5f, shared_from_this());
-        sf::RectangleShape rect({(float)(bbox.size.x + cellPadding * 2), (float)(height - cellBorder * 2)});
+        e->drawOn(canvas, (float)(x + cellPadding), (float)(height - indexHeight - bbox.size.y) * 0.5f, shared_from_this());
+
+        // draw border
+        sf::RectangleShape rect({(float)(bbox.size.x + cellPadding * 2), (float)(height - indexHeight - cellBorder * 2)});
         rect.setPosition({(float)x, (float)cellBorder});
         rect.setOutlineThickness(cellBorder);
         rect.setOutlineColor(sf::Color::Black);
         rect.setFillColor(sf::Color::Transparent);
         canvas.draw(rect);
+
+        // draw index
+        indexText.setString(std::to_string(i));
+        indexText.setOrigin({indexText.getString().getSize() * charWidth * 0.5f, 0.f});
+        indexText.setPosition({(float)x + (float)(bbox.size.x + cellPadding * 2) * 0.5f, (float)(height - indexHeight)});
+        canvas.draw(indexText);
 
         x += bbox.size.x + cellPadding * 2 + cellBorder;
       }

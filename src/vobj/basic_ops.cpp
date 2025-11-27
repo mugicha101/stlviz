@@ -1,14 +1,17 @@
 #include "vobj/basic_ops.hpp"
+#include "vstd/base.hpp"
 
 namespace vobj {
+  std::string genDefaultName(std::shared_ptr<vobj::Display> target, std::source_location sloc) {
+    return std::string(target->o ? target->o->_vstd_type_name() : "") + ":" + std::to_string(sloc.line()) + ":" + std::to_string(sloc.column());
+  }
+
   void ConstructOp::apply() {
-    std::cout << target->uid << " ALIVE" << std::endl;
     target->setAlive(true);
     target->name = defaultName;
   }
 
   void ConstructOp::undo() {
-    std::cout << target->uid << " DEAD" << std::endl;
     target->setAlive(false);
     target->name = "";
   }

@@ -20,12 +20,19 @@ namespace vstd {
     bool _vstd_update_values(vobj::Operation &op) override {
       return bo->update(op, value);
     }
-    static const char *name();
+    static const char *name() { return "Unknown"; }
 
   public:
 
     std::string _vstd_type_name() const override {
-      return "NumWrapper";
+      std::string res;
+      for (size_t i = 0; name()[i] != '\0'; ++i) {
+        char c = name()[i];
+        bool u = c >= 'A' && c <= 'Z';
+        if (u && res.size()) res.push_back(' ');
+        res.push_back(tolower(c));
+      }
+      return res;
     }
 
     operator T() const { return value; }

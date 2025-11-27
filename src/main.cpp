@@ -103,7 +103,7 @@ int main() {
   ia += 10;
   vstd::Int ic = std::move(ia);
   ia = 3;
-  DEF(c);
+  DEF(ic);
   ic = ib * 2 + 15;
   ++ia;
   ic = ia++;
