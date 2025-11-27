@@ -35,7 +35,7 @@ protected:
 public:
 
     bool update(Operation &op) override {
-      PrimitiveBase::update(op);
+      return PrimitiveBase::update(op);
     }
 
     bool update(Operation &op, T realLatest) {
