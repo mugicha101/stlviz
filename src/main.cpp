@@ -62,6 +62,7 @@ int main() {
   vec[4] = 9;
 
   vstd::vector<int> vec2(20);
+  DEF(vec2);
   for (int i = 0; i < vec2.size(); ++i) {
     vec2[i] = rand() % 100;
   }
