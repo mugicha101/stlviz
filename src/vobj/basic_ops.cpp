@@ -2,13 +2,11 @@
 
 namespace vobj {
   void ConstructOp::apply() {
-    std::cout << target->uid << " ALIVE" << std::endl;
     target->setAlive(true);
     target->name = defaultName;
   }
 
   void ConstructOp::undo() {
-    std::cout << target->uid << " DEAD" << std::endl;
     target->setAlive(false);
     target->name = "";
   }

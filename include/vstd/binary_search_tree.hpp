@@ -177,6 +177,7 @@ namespace vstd {
       SLOC;
       OP("binary_search_tree destruction",
         // Clear all nodes
+        treeDisplay->clear(op);
         root = nullptr;
         op.comps.push_back(std::make_unique<vobj::DestroyOp>(treeDisplay));
       )
