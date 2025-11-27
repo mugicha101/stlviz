@@ -52,67 +52,149 @@ namespace vobj {
 
     // first locate any new displays and assign them positions
     // do this by pushing away from others
+    // std::vector<std::shared_ptr<Display>> newDisplays;
+    // for (std::shared_ptr<Display> d : tlds) {
+    //   if (d->needInitPos) {
+    //     newDisplays.push_back(d);
+    //   }
+    // }
+    // if (!newDisplays.empty()) {
+    //   // Position new displays using a grid-based approach to avoid overlaps
+    //   // Only search in the bottom-right quadrant (visible area)
+    //   for (size_t i = 0; i < newDisplays.size(); ++i) {
+    //     auto nd = newDisplays[i];
+
+    //     // Start from a visible position on screen (top-left corner with some padding)
+    //     sf::Vector2f startPos = camPosition + sf::Vector2f{50.f, 50.f};
+
+    //     // Try positions in a spiral pattern outward from starting position
+    //     const float gridStep = 50.f;
+    //     sf::FloatRect ndb = padbbox(static_cast<sf::FloatRect>(nd->getBBox()), 25.f);
+
+    //     bool positionFound = false;
+    //     int maxRadius = 20; // Maximum search radius
+
+    //     for (int radius = 0; radius < maxRadius && !positionFound; ++radius) {
+    //       // Try positions at this radius, but only in bottom-right quadrant
+    //       int steps = std::max(1, radius * 8); // More positions at larger radii
+
+    //       for (int step = 0; step < steps && !positionFound; ++step) {
+    //         // Calculate candidate position in a circular pattern
+    //         float angle = (float)step / (float)steps * 2.f * 3.14159265f;
+
+    //         // Restrict to bottom-right quadrant only (angles 0 to π/2)
+    //         // Map step to angle range [0, π/2] instead of [0, 2π]
+    //         angle = (float)step / (float)steps * 3.14159265f * 0.5f;
+
+    //         sf::Vector2f candidatePos = {
+    //           startPos.x + std::cos(angle) * (float)radius * gridStep,
+    //           startPos.y + std::sin(angle) * (float)radius * gridStep
+    //         };
+
+    //         // Check if this position causes any overlaps
+    //         ndb.position = candidatePos;
+    //         bool hasOverlap = false;
+
+    //         for (auto d : tlds) {
+    //           if (nd == d || d->needInitPos) continue;
+
+    //           sf::FloatRect db = padbbox(static_cast<sf::FloatRect>(d->getBBox()), 25.f);
+    //           db.position += d->pos;
+
+    //           // Check if rectangles intersect
+    //           bool intersects = !(ndb.position.x + ndb.size.x < db.position.x ||
+    //                              db.position.x + db.size.x < ndb.position.x ||
+    //                              ndb.position.y + ndb.size.y < db.position.y ||
+    //                              db.position.y + db.size.y < ndb.position.y);
+
+    //           if (intersects) {
+    //             hasOverlap = true;
+    //             break;
+    //           }
+    //         }
+
+    //         if (!hasOverlap) {
+    //           nd->pos = candidatePos;
+    //           positionFound = true;
+    //         }
+    //       }
+    //     }
+
+    //     nd->needInitPos = false;
+    //   }
+    // }
+
     std::vector<std::shared_ptr<Display>> newDisplays;
     for (std::shared_ptr<Display> d : tlds) {
       if (d->needInitPos) {
         newDisplays.push_back(d);
       }
     }
+
+    using TypeClusterMap =
+        std::unordered_map<std::string, std::vector<std::shared_ptr<Display>>>;
+    TypeClusterMap clusters;
+
+    for (std::shared_ptr<Display> d : tlds) {
+      if (d->needInitPos)
+        continue;
+      std::string typeName;
+      if (d->o)
+        typeName = d->o->_vstd_type_name();
+      clusters[typeName].push_back(d);
+    }
+
     if (!newDisplays.empty()) {
-      // Position new displays using a grid-based approach to avoid overlaps
-      // Only search in the bottom-right quadrant (visible area)
-      for (size_t i = 0; i < newDisplays.size(); ++i) {
-        auto nd = newDisplays[i];
+      const float vSpacing = (float)FONT_SIZE * 2.f;
+      const float gridStep = 50.f;
 
-        // Start from a visible position on screen (top-left corner with some padding)
+      for (auto &nd : newDisplays) {
+        std::string typeName;
+        if (nd->o)
+          typeName = nd->o->_vstd_type_name();
+
+        auto it = clusters.find(typeName);
+        if (it != clusters.end() && !it->second.empty()) {
+          auto last = it->second.back();
+          sf::IntRect lastBox = last->getBBox();
+          sf::IntRect thisBox = nd->getBBox();
+          nd->pos.x = last->pos.x;
+          nd->pos.y = last->pos.y + lastBox.size.y + vSpacing;
+          nd->needInitPos = false;
+          it->second.push_back(nd);
+          continue;
+        }
+
         sf::Vector2f startPos = camPosition + sf::Vector2f{50.f, 50.f};
-
-        // Try positions in a spiral pattern outward from starting position
-        const float gridStep = 50.f;
-        sf::FloatRect ndb = padbbox(static_cast<sf::FloatRect>(nd->getBBox()), 25.f);
-
+        sf::FloatRect ndb =
+            padbbox(static_cast<sf::FloatRect>(nd->getBBox()), 25.f);
         bool positionFound = false;
-        int maxRadius = 20; // Maximum search radius
+        int maxRadius = 20;
 
         for (int radius = 0; radius < maxRadius && !positionFound; ++radius) {
-          // Try positions at this radius, but only in bottom-right quadrant
-          int steps = std::max(1, radius * 8); // More positions at larger radii
-
+          int steps = std::max(1, radius * 8);
           for (int step = 0; step < steps && !positionFound; ++step) {
-            // Calculate candidate position in a circular pattern
-            float angle = (float)step / (float)steps * 2.f * 3.14159265f;
-
-            // Restrict to bottom-right quadrant only (angles 0 to π/2)
-            // Map step to angle range [0, π/2] instead of [0, 2π]
-            angle = (float)step / (float)steps * 3.14159265f * 0.5f;
-
+            float angle = (float)step / (float)steps * 3.14159265f * 0.5f;
             sf::Vector2f candidatePos = {
-              startPos.x + std::cos(angle) * (float)radius * gridStep,
-              startPos.y + std::sin(angle) * (float)radius * gridStep
-            };
-
-            // Check if this position causes any overlaps
+                startPos.x + std::cos(angle) * (float)radius * gridStep,
+                startPos.y + std::sin(angle) * (float)radius * gridStep};
             ndb.position = candidatePos;
             bool hasOverlap = false;
-
             for (auto d : tlds) {
-              if (nd == d || d->needInitPos) continue;
-
-              sf::FloatRect db = padbbox(static_cast<sf::FloatRect>(d->getBBox()), 25.f);
+              if (nd == d || d->needInitPos)
+                continue;
+              sf::FloatRect db =
+                  padbbox(static_cast<sf::FloatRect>(d->getBBox()), 25.f);
               db.position += d->pos;
-
-              // Check if rectangles intersect
               bool intersects = !(ndb.position.x + ndb.size.x < db.position.x ||
-                                 db.position.x + db.size.x < ndb.position.x ||
-                                 ndb.position.y + ndb.size.y < db.position.y ||
-                                 db.position.y + db.size.y < ndb.position.y);
-
+                                  db.position.x + db.size.x < ndb.position.x ||
+                                  ndb.position.y + ndb.size.y < db.position.y ||
+                                  db.position.y + db.size.y < ndb.position.y);
               if (intersects) {
                 hasOverlap = true;
                 break;
               }
             }
-
             if (!hasOverlap) {
               nd->pos = candidatePos;
               positionFound = true;
@@ -121,9 +203,9 @@ namespace vobj {
         }
 
         nd->needInitPos = false;
+        clusters[typeName].push_back(nd);
       }
     }
-
     for (std::shared_ptr<Display> d : tlds) {
       bbox = d->getBBox();
 
