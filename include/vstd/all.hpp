@@ -18,48 +18,6 @@
 #include "vstd/set.hpp"
 #include "vstd/bitset.hpp"
 
-// map vstd class to vobj class at compile time
-namespace vobj {
-  template<typename T>
-  struct BackingType<vstd::vector<T>> {
-    using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
-  };
-
-  template<typename T, typename Container>
-  struct BackingType<vstd::stack<T, Container>> {
-    using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
-  };
-  template <typename T>
-  struct BackingType<vstd::deque<T>> {
-    using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
-  };
-
-  template <typename T, typename Compare>
-  struct BackingType<vstd::set<T, Compare>> {
-    using type = vobj::List<std::shared_ptr<typename BackingType<T>::type>>;
-  };
-
-  template <std::size_t N> 
-  struct BackingType<vstd::bitset<N>> {
-    using type = vobj::List<std::shared_ptr<typename BackingType<bool>::type>>;
-  };
-
-  template<typename T>
-  struct BackingType<vstd::binary_tree<T>> {
-    using type = vobj::Tree<std::shared_ptr<typename BackingType<T>::type>>;
-  };
-
-  template<typename T>
-  struct BackingType<vstd::binary_search_tree<T>> {
-    using type = vobj::Tree<std::shared_ptr<typename BackingType<T>::type>>;
-  };
-
-  template<typename T>
-  struct BackingType<vstd::NumWrapper<T>> {
-    using type = typename BackingType<T>::type;
-  };
-}
-
 // allow naming vstd objects to their variable name
 #define DEF(X) X._vstd_rename(#X)
 

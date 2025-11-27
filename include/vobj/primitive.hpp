@@ -14,7 +14,7 @@ namespace vobj {
   struct PrimitiveBase : public Display {
     // override update since no vstd::base
     // assignment of latest should be considered in parent by calling update(op, realLatest)
-    virtual bool update(Operation &op) override {
+    bool update(Operation &op) override {
       ERR("Primitive<T>::update(op) should not be called directly, Primitive<T>::update(op, val) instead!");
     }
   };
@@ -33,6 +33,10 @@ protected:
     FRIEND_CREATE
 
 public:
+
+    bool update(Operation &op) override {
+      PrimitiveBase::update(op);
+    }
 
     bool update(Operation &op, T realLatest) {
       if (localUpdateTick == globalUpdateTick) return updated;
