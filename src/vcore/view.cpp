@@ -189,25 +189,11 @@ namespace vcore {
       drawSelectBox(selectedDisplay, selectedDisplayColor);
     }
 
-    // draw operations list
-    sf::RectangleShape opListBg({(float)(width - opListX), (float)height});
-    opListBg.setPosition({(float)opListX, 0.f});
-    opListBg.setFillColor(sf::Color(220, 220, 220));
-    window.draw(opListBg);
-    sf::Text text(font);
-    sf::Text locText(font);
+    
+    // draw operations list scrollbar
     uint64_t textSpacing = font.getLineSpacing(OP_FONT_SIZE);
     float charWidth = font.getGlyph('0', OP_FONT_SIZE, false).advance;
-    text.setCharacterSize(OP_FONT_SIZE);
-    locText.setCharacterSize(OP_FONT_SIZE);
-    text.setFillColor(textColor);
-    locText.setFillColor(locTextColor);
-    sf::RectangleShape opBg({(float)(width - opListX), (float)textSpacing});
-    opBg.setOutlineColor(borderColor);
-    opBg.setOutlineThickness(-2.f);
-    sf::RectangleShape locBg({(float)(width - opListX), (float)textSpacing});
-    locBg.setOutlineColor(borderColor);
-    locBg.setOutlineThickness(-2.f);
+    uint64_t opListHeight = std::max({(uint64_t)1, height, (uint64_t)ops.size() * textSpacing});
     float currOpY = (float)((int)currOp - 1) * (float)textSpacing;
     if (opListYOff + currOpY > (float)height * 0.75f) {
       opListYOff = (float)height * 0.75f - currOpY;
@@ -215,35 +201,6 @@ namespace vcore {
     if (opListYOff + currOpY < (float)height * 0.25f) {
       opListYOff = std::min((float)height * 0.25f - currOpY, 0.f);
     }
-    for (size_t i = 0; i < ops.size(); ++i) {
-      float y = opListYOff + i * textSpacing;
-      if (y + textSpacing < 0.f || y > (float)height) continue;
-
-      // display background
-      opBg.setPosition({(float)opListX, y});
-      opBg.setFillColor(i == currOp - 1 ? selectOpColor : i == hoverOp - 1 ? hoverOpColor : normalColor);
-      window.draw(opBg);
-
-      // display loc text
-      locText.setPosition({(float)(opListX + 5.f), y});
-      bool isRange = ops[i].startLine != ops[i].endLine || ops[i].startOffset != ops[i].endOffset;
-      std::string loc = isRange ? std::to_string(ops[i].startLine) + ":" + std::to_string(ops[i].startOffset) + "-" + std::to_string(ops[i].endLine) + ":" + std::to_string(ops[i].endOffset)
-                                : std::to_string(ops[i].startLine) + ":" + std::to_string(ops[i].startOffset);
-      locText.setString(loc);
-      uint32_t locTextWidth = (uint32_t)std::ceil(charWidth * (float)locText.getString().getSize());
-      locText.setFillColor(locTextColor);
-      locBg.setPosition({(float)(opListX), y});
-      locBg.setSize({(float)(locTextWidth + 10u), (float)textSpacing});
-      locBg.setFillColor(i == currOp - 1 ? locSelectColor : locNormalColor);
-      window.draw(locBg);
-      window.draw(locText);
-      
-      // display text
-      text.setPosition({(float)(opListX + locTextWidth) + 10.f, y});
-      text.setString(ops[i].content);
-      window.draw(text);
-    }
-    uint64_t opListHeight = std::max({(uint64_t)1, height, (uint64_t)ops.size() * textSpacing});
     float scrollBarScale = (float)height / (float)opListHeight;
     sf::RectangleShape opListScrollBar;
     opListScrollBar.setSize({3.f, (float)height});
@@ -258,6 +215,79 @@ namespace vcore {
     opListScrollBar.setPosition({(float)(opListX - 3u), currOpY * scrollBarScale});
     opListScrollBar.setFillColor(locSelectColor);
     window.draw(opListScrollBar);
+
+    // draw operations list
+    sf::RectangleShape opListBg({(float)(width - opListX), (float)height});
+    opListBg.setPosition({(float)opListX, 0.f});
+    opListBg.setFillColor(sf::Color(220, 220, 220));
+    window.draw(opListBg);
+    sf::Text text(font);
+    sf::Text locText(font);
+    text.setCharacterSize(OP_FONT_SIZE);
+    locText.setCharacterSize(OP_FONT_SIZE);
+    text.setFillColor(textColor);
+    locText.setFillColor(locTextColor);
+    sf::RectangleShape opBg({(float)(width - opListX), (float)textSpacing});
+    opBg.setOutlineColor(borderColor);
+    opBg.setOutlineThickness(-2.f);
+    sf::RectangleShape locBg({(float)(width - opListX), (float)textSpacing});
+    locBg.setOutlineColor(borderColor);
+    locBg.setOutlineThickness(-2.f);
+    uint32_t maxLineChars = (uint32_t)std::floor(((float)(width - opListX) - 5.f) / charWidth);
+    for (size_t i = 0; i < ops.size(); ++i) {
+      float y = opListYOff + i * textSpacing;
+      float x = opListX;
+      if (y + textSpacing < 0.f || y > (float)height) continue;
+
+      // display background
+      opBg.setPosition({x, y});
+      opBg.setFillColor(i == currOp - 1 ? selectOpColor : i == hoverOp - 1 ? hoverOpColor : normalColor);
+      window.draw(opBg);
+
+      // display loc text
+      std::string locStr = ops[i].startLoc.prettyCombine(ops[i].endLoc);
+      uint32_t maxLocStrChars = maxLineChars - std::min(maxLineChars, (uint32_t)ops[i].content.size());
+      bool cutOff = false;
+      if (maxLocStrChars < locStr.size()) {
+        if (hoverOp - 1 == i) {
+          x -= charWidth * (float)(locStr.size() - maxLocStrChars);
+        } else {
+          locStr = locStr.substr(locStr.size()-maxLocStrChars);
+          cutOff = true;
+        }
+      }
+      locText.setPosition({x + 5.f, y});
+      locText.setString(locStr);
+      uint32_t textWidth = ops[i].content.size();
+      uint32_t locTextWidth = (uint32_t)std::ceil(charWidth * (float)locText.getString().getSize());
+      locText.setFillColor(locTextColor);
+      locBg.setPosition({x, y});
+      locBg.setSize({(float)(locTextWidth + 10u), (float)textSpacing});
+      locBg.setFillColor(i == currOp - 1 ? locSelectColor : locNormalColor);
+      window.draw(locBg);
+      window.draw(locText);
+
+      // draw arrow indicating more text
+      if (cutOff) {
+        sf::ConvexShape tri;
+        tri.setPointCount(3);
+        float sideLen = textSpacing * 0.3f;
+        float dx = sideLen * std::sin(sf::degrees(30).asRadians());
+        float dy = sideLen * std::cos(sf::degrees(30).asRadians());
+        float cx = x + 2.5f;
+        float cy = y + (float)textSpacing * 0.5f;
+        tri.setPoint(0, sf::Vector2f{cx - dx * 0.5f, cy});
+        tri.setPoint(1, sf::Vector2f{cx + dx * 0.5f, cy + dy});
+        tri.setPoint(2, sf::Vector2f{cx + dx * 0.5f, cy - dy});
+        tri.setFillColor(normalColor);
+        window.draw(tri);
+      }
+      
+      // display text
+      text.setPosition({x + (float)locTextWidth + 10.f, y});
+      text.setString(ops[i].content);
+      window.draw(text);
+    }
 
     window.display();
   }

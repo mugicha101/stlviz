@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vobj/root_display.hpp"
+#include "vobj/loc_info.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <type_traits>
@@ -19,19 +20,15 @@ namespace vobj {
   struct Operation {
     size_t oid; // operation unique id
 
-    uint64_t startLine;
-    uint64_t startOffset;
-    const char *startFileName;
-    uint64_t endLine;
-    uint64_t endOffset;
-    const char *endFileName;
+    LocInfo startLoc;
+    LocInfo endLoc;
 
     std::string content; // text description of operation
     std::vector<std::unique_ptr<OpComp>> comps; // represent components of operation applied in order
 
     Operation();
-    Operation(size_t oid, uint64_t line, uint64_t offset, const char *file, std::string content = "");
-    Operation(size_t oid, uint64_t startLine, uint64_t startOffset, const char *startFileName, uint64_t endLine, uint64_t endOffset, const char *endFileName, std::string content = "");
+    Operation(size_t oid, std::string content, LocInfo startLoc, LocInfo endLoc);
+    Operation(size_t oid, std::string content, LocInfo loc);
 
     void draw(std::shared_ptr<vobj::RootDisplay> root, sf::RenderTarget &t);
     void apply();

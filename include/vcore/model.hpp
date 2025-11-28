@@ -8,9 +8,7 @@ namespace vcore {
   struct Model {
     std::shared_ptr<vobj::RootDisplay> root = vobj::create<vobj::RootDisplay>();
     std::deque<vobj::Operation> ops;
-    uint64_t lastUpdateLine = 0;
-    uint64_t lastUpdateOffset = 0;
-    const char *lastUpdatedFileName = "";
+    vobj::LocInfo lastLoc;
     
     Model();
 
