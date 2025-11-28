@@ -1,9 +1,10 @@
 #include "vobj/root_display.hpp"
-#include "vstd/base.hpp"
+#include "vobj/colors.hpp"
 #include "vobj/primitive.hpp"
-#include <iostream>
-#include <cmath>
+#include "vstd/base.hpp"
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 
 sf::FloatRect padbbox(sf::FloatRect bbox, float amt) {
   bbox.position -= {amt, amt};
@@ -217,7 +218,8 @@ namespace vobj {
       float charWidth = font.getGlyph('0', FONT_SIZE, false).advance;
       float nameWidth = charWidth * (float)text.getString().getSize();
       float nameHeight = (float)font.getLineSpacing(FONT_SIZE);
-      text.setFillColor(sf::Color::Black);
+      // text.setFillColor(sf::Color::Black);
+      text.setFillColor(vobj::currentScheme().nameText);
       text.setPosition(world2screen({d->pos.x, d->pos.y - nameHeight * 0.5f}));
       text.setOrigin({0.f, nameHeight * 0.5f});
       text.setScale({invCamZoom, invCamZoom});

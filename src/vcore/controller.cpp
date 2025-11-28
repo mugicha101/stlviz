@@ -1,7 +1,8 @@
-#include <vcore/controller.hpp>
-#include <iostream>
+#include "vobj/colors.hpp"
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <vcore/controller.hpp>
 
 namespace vcore {
   Controller::Controller() : view(sf::VideoMode::getDesktopMode().size / 2u) {
@@ -43,6 +44,10 @@ namespace vcore {
               break;
             case Key::Left:
               step(-1);
+              break;
+            //Toggle color-blind with 'c'
+            case Key::C:
+              vobj::colorblindMode() = !vobj::colorblindMode();
               break;
             // Tab navigation with number keys
             case Key::Num1:

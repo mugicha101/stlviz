@@ -1,6 +1,7 @@
+#include "vobj/colors.hpp"
+#include <iostream>
 #include <vcore/all.hpp>
 #include <vstd/base.hpp>
-#include <iostream>
 
 namespace vcore {
   View::View(uint32_t width, uint32_t height) {
@@ -69,7 +70,9 @@ namespace vcore {
   }
 
   void View::update(vcore::Controller &controller) {
-    window.clear(sf::Color(200, 200, 255));
+    // window.clear(sf::Color(200, 200, 255));
+    const auto &scheme = vobj::currentScheme();
+    window.clear(scheme.background);
 
     auto root_display = controller.model.root;
     if (!root_display) {

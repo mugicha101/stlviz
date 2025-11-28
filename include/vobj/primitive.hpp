@@ -1,10 +1,11 @@
 #pragma once
 
+#include "vobj/colors.hpp"
 #include "vobj/display.hpp"
 #include "vobj/operation.hpp"
+#include <cmath>
 #include <iostream>
 #include <string>
-#include <cmath>
 
 namespace vobj {
   template<typename T>

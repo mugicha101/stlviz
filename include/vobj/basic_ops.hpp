@@ -1,7 +1,8 @@
 #pragma once
 
-#include "vobj/operation.hpp"
 #include "vobj/backing_type.hpp"
+#include "vobj/colors.hpp"
+#include "vobj/operation.hpp"
 #include <iostream>
 #include <string>
 
@@ -67,7 +68,8 @@ namespace vobj {
         screenPos.y += 40.f; // tabBarHeight
         rect.setPosition(screenPos);
         rect.setFillColor(sf::Color::Transparent);
-        rect.setOutlineColor(sf::Color::Red);
+        // rect.setOutlineColor(sf::Color::Red);
+        rect.setOutlineColor(vobj::currentScheme().highlightOutline);
         rect.setOutlineThickness(3.f * (1.f / root->camZoom));
         t.draw(rect);
       }
