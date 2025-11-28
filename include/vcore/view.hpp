@@ -26,6 +26,9 @@ namespace vcore {
     uint32_t opListX = 0u; // x position of operation list
     float opListYOff = 0.f; // vertical offset of operation list scrolling
     uint32_t tabBarHeight = 40u; // height of the tab bar
+    float tabSpacing = 5.f;
+    float tabHeight = (float)tabBarHeight - 5.f;
+    float tabWidth = 120.f;
 
     std::vector<Tab> tabs;
     size_t activeTabIndex = 0;

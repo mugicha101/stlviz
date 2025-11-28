@@ -56,9 +56,6 @@ namespace vcore {
   int View::tabBarHover(float mx, float my) const {
     if (my >= tabBarHeight) return -1;
 
-    const float tabWidth = 120.f;
-    const float tabSpacing = 5.f;
-
     for (size_t i = 0; i < tabs.size(); ++i) {
       float tabX = tabSpacing + i * (tabWidth + tabSpacing);
       if (mx >= tabX && mx < tabX + tabWidth) {
@@ -114,13 +111,12 @@ namespace vcore {
     root_display->size.y = height - tabBarHeight;
 
     // Draw tab bar
-    const float tabSpacing = 5.f;
-    const float tabHeight = (float)tabBarHeight - 5.f;
 
     // Calculate dynamic tab width to fit all tabs on screen
     // Reserve space for operation list (25% of screen width)
+    tabHeight = (float)tabBarHeight - 5.f;
     float availableWidth = opListX - tabSpacing * 2.f; // Account for spacing on both sides
-    float tabWidth = (availableWidth - tabSpacing * (tabs.size() - 1)) / (float)tabs.size();
+    tabWidth = (availableWidth - tabSpacing * (tabs.size() - 1)) / (float)tabs.size();
 
     // Ensure minimum tab width for readability
     const float minTabWidth = 80.f;
