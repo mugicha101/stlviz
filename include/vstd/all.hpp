@@ -24,4 +24,4 @@
 
 // allows main to keep window open after finishing
 // does this by intercepting final destructor call
-#define MAIN_DONE() CONTROLLER.mainDone = true
+#define MAIN_DONE CONTROLLER.mainDone = true

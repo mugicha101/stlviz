@@ -131,7 +131,7 @@ int main() {
   vstd::binary_tree<int>::NodeHandle node5 = bt.insertRight(node2, 5);
   bt.insertLeft(node4, 6);
 
-  MAIN_DONE();
+  MAIN_DONE;
 
   // _Exit(0);
 }
