@@ -57,6 +57,7 @@ namespace vobj {
     }
 
     void draw(std::shared_ptr<vobj::RootDisplay> root, sf::RenderTarget &t) override {
+      if (!target->drawnThisTick()) return;
       sf::IntRect bbox = target->getBBox();
       std::vector<sf::Vector2f> drawLocs;
       target->getGlobalDrawLocs(drawLocs);

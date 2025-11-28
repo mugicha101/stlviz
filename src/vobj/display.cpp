@@ -127,4 +127,11 @@ namespace vobj {
   bool Display::isAlive() const {
     return alive;
   }
+
+  bool Display::drawnThisTick() const {
+    return localDrawTick == globalDrawTick;
+  }
+  bool Display::updatedThisTick() const {
+    return localUpdateTick == globalUpdateTick;
+  }
 }
