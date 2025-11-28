@@ -120,6 +120,10 @@ namespace vobj {
 
     void setAlive(bool alive);
     bool isAlive() const;
+
+    // return true if drawn/updated this draw/update tick
+    bool drawnThisTick() const;
+    bool updatedThisTick() const;
   };
 
   // factory
