@@ -96,6 +96,10 @@ namespace vstd {
       init_helper(sloc);
     }
 
+    vector(std::initializer_list<T> init, SLOC) : SUPER(init) {
+      init_helper(sloc);
+    }
+
     ~vector() {;
       SLOC;
       OP("vector destruction",
