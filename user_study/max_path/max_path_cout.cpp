@@ -21,7 +21,7 @@ int dfs(TreeNode *node) {
   }
   int rightChain = 0;
   if (node->right) {
-    rightChain = dfs(node->left);
+    rightChain = dfs(node->right);
     maxPathSum = std::max(maxPathSum, node->right->value);
   }
 

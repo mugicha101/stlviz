@@ -15,7 +15,7 @@ int dfs(vstd::binary_tree<int>::NodeHandle node) {
   vstd::Int rightChain = 0;
   DEF(rightChain);
   if (node->right) {
-    rightChain = dfs(node->left);
+    rightChain = dfs(node->right);
     maxPathSum = std::max((int)maxPathSum, node->right->value);
   }
 

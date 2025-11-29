@@ -8,6 +8,6 @@ Input:
 
 Expected Output:
 
-   43
+   42
 9     42
    15    7
