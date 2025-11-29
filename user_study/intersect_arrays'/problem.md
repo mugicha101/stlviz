@@ -1,0 +1,1 @@
+Given two arrays `inputA` and `inputB` of distinct integers, output `inputC` containing all elements in both `inputA` and `inputB` in sorted order without duplicates.

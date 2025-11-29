@@ -1,0 +1,1 @@
+when inserting inputB into setB, wrongly uses the size for inputA instead of inputB thus skipping 3

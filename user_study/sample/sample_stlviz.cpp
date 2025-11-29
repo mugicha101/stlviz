@@ -9,6 +9,7 @@ int main() {
   vstd::Int output = 0;
   DEF(output);
   for (vstd::Int i = 1; i < input.size(); ++i) {
+    DEF(i);
     output += input[i];
     SNAP;
   }
