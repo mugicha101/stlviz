@@ -24,4 +24,5 @@ int main() {
   }
 
   // OUTPUT - check output
+  MAIN_DONE;
 }

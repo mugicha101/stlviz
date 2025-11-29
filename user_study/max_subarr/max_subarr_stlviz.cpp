@@ -26,6 +26,6 @@ int main() {
     output = std::max(output, sum);
   }
 
-  // OUTPUT
-  std::cout << "output: " << output << std::endl;
+  // OUTPUT - check output
+  MAIN_DONE;
 }
