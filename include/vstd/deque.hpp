@@ -91,10 +91,12 @@ public:
 
   ~deque() {
     SLOC;
-    OP(
-        "deque destruction", for (size_t i = 0; i < size(); ++i) {
-          bo->remove(op, i);
-        } op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));)
+    OP("deque destruction",
+      for (size_t i = 0; i < size(); ++i) {
+        bo->remove(op, i);
+      } op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
+      bo->o = nullptr;
+    )
   }
 
 
