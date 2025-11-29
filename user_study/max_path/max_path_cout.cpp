@@ -30,7 +30,7 @@ int dfs(TreeNode *node) {
   node->value = maxPathSum;
 
   // returns max path sum from node to leaf
-  return std::max(leftChain, rightChain) + node->value;
+  return std::max(leftChain, rightChain) + value;
 }
 
 int main() {
