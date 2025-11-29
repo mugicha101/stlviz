@@ -1,0 +1,2 @@
+Given an array of distinct integers `input` and a set of queries `queries`,
+Output the results of the queries into `output` such that `output[i]` is the number of elements in `input` smaller than `queries[i]`.

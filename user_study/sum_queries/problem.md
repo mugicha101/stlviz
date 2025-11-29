@@ -1,0 +1,2 @@
+Given an array of integers `input` and a set of range queries stored as `queryLeft` and `queryRight`
+Output the results of each query into `output` such that `output[i]` is the sum of integers from index `queryLeft[i]` to `queryRight[i]` inclusive.

@@ -1,0 +1,2 @@
+Since psum[i] is the sum of elements up to i-1 (excludes i), input[a] + ... + input[b] = psum[b+1] - psum[a]
+thus psum[queryRight[i]] - psum[queryLeft[i]] should be psum[queryRight[i]+1] - psum[queryLeft[i]]
