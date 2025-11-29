@@ -12,6 +12,7 @@ struct TreeNode {
 
 int dfs(TreeNode *node) {
   // max max path in subtrees and get subtree chains (path from node to leaf)
+  int value = node->value;
   int maxPathSum = 0;
   int leftChain = 0;
   if (node->left) {
@@ -26,6 +27,7 @@ int dfs(TreeNode *node) {
 
   // candidate path: leftChain -> node -> rightChain
   maxPathSum = std::max(maxPathSum, leftChain + rightChain);
+  node->value = maxPathSum;
 
   // returns max path sum from node to leaf
   return std::max(leftChain, rightChain) + node->value;
