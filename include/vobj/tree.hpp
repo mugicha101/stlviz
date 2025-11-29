@@ -69,24 +69,31 @@ namespace vobj {
       canvas.display();
     }
 
-    // Calculate the width this subtree needs
-    float calculateSubtreeWidth(float nodeSpacing) {
-      if (!leftChild && !rightChild) {
-        subtreeWidth = (float)getBBox().size.x;
-        return subtreeWidth;
+    std::pair<float,float> calculateSubtreeXBounds(float nodeSpacing) {
+      if (!isAlive()) {
+        subtreeWidth = 0.f;
+        return {0.f, 0.f};
       }
-
-      float leftWidth = 0.f;
-      float rightWidth = 0.f;
-
+      float nodeWidth = (float)getBBox().size.x;
+      float minX = -nodeWidth * 0.5f;
+      float maxX = nodeWidth * 0.5f;
       if (leftChild && leftChild->isAlive()) {
-        leftWidth = leftChild->calculateSubtreeWidth(nodeSpacing);
+        auto [leftMinX, leftMaxX] = leftChild->calculateSubtreeXBounds(nodeSpacing);
+        minX = std::min(minX, leftMinX - nodeSpacing);
+        maxX = std::max(maxX, leftMaxX - nodeSpacing);
       }
       if (rightChild && rightChild->isAlive()) {
-        rightWidth = rightChild->calculateSubtreeWidth(nodeSpacing);
+        auto [rightMinX, rightMaxX] = rightChild->calculateSubtreeXBounds(nodeSpacing);
+        minX = std::min(minX, rightMinX + nodeSpacing);
+        maxX = std::max(maxX, rightMaxX + nodeSpacing);
       }
+      subtreeWidth = maxX - minX;
+      return {minX, maxX};
+    }
 
-      subtreeWidth = std::max((float)getBBox().size.x, leftWidth + rightWidth + nodeSpacing);
+    // Calculate the width this subtree needs
+    float calculateSubtreeWidth(float nodeSpacing) {
+      calculateSubtreeXBounds(nodeSpacing);
       return subtreeWidth;
     }
 
