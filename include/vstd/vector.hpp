@@ -96,12 +96,17 @@ namespace vstd {
       init_helper(sloc);
     }
 
+    vector(std::initializer_list<T> init, SLOC) : SUPER(init) {
+      init_helper(sloc);
+    }
+
     ~vector() {;
       SLOC;
       OP("vector destruction",
         for (size_t i = 0; i < size(); ++i) {
           bo->remove(op, i);
         }
+        bo->o = nullptr;
         op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
       )
     }

@@ -6,10 +6,25 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <utility>
 
 namespace vobj {
   template<typename T>
   struct AssignOp;
+
+  template<typename T>
+  struct ToString {
+    static std::string apply(const T &val) {
+      return std::to_string(val);
+    }
+  };
+
+  template<typename A, typename B>
+  struct ToString<std::pair<A,B>> {
+    static std::string apply(const std::pair<A,B> &val) {
+      return std::to_string(val.first) + "," + std::to_string(val.second);
+    }
+  };
 
   // parent class of primitive to allow for runtime detection for primitives
   struct PrimitiveBase : public Display {
@@ -53,7 +68,7 @@ public:
     void draw() override {
       sf::Font &font = Display::getFont();
       sf::Text text(font);
-      text.setString(std::to_string(value));
+      text.setString(ToString<T>::apply(value));
       text.setCharacterSize(FONT_SIZE);
       float charWidth = font.getGlyph('0', FONT_SIZE, false).advance;
       uint32_t width = (uint32_t)std::ceil(charWidth * (float)text.getString().getSize());

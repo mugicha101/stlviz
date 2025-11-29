@@ -136,6 +136,7 @@ namespace vstd {
         // Clear all nodes
         treeDisplay->clear(op);
         root = nullptr;
+        treeDisplay->o = nullptr;
         op.comps.push_back(std::make_unique<vobj::DestroyOp>(treeDisplay));
       )
     }

@@ -105,3 +105,14 @@ add_executable(main src/main.cpp)
 target_compile_features(main PRIVATE cxx_std_20)
 target_compile_definitions(main PRIVATE STLVIZ_ENABLED=1)
 target_link_libraries(main PRIVATE stlviz)
+
+# ===== BUILD USER STUDY PROGRAMS =====
+file(GLOB_RECURSE USER_STUDY_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/user_study/*.cpp")
+message(STATUS "Found user study sources: ${USER_STUDY_SOURCES}")
+
+foreach(src IN LISTS USER_STUDY_SOURCES)
+    get_filename_component(exec_name ${src} NAME_WE)
+    add_executable(${exec_name} ${src})
+    target_compile_features(${exec_name} PRIVATE cxx_std_20)
+    target_link_libraries(${exec_name} PRIVATE stlviz)
+endforeach()

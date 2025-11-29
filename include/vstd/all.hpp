@@ -18,10 +18,15 @@
 #include "vstd/set.hpp"
 #include "vstd/bitset.hpp"
 
-// allow naming vstd objects to their variable name
+// allows naming vstd objects to their variable name
 #define DEF(X) X._vstd_rename(#X)
 
+// allows naming vstd objects to an arbitrary name
+#define DEFN(X, NAME) X._vstd_rename(#NAME)
 
 // allows main to keep window open after finishing
 // does this by intercepting final destructor call
-#define MAIN_DONE() CONTROLLER.mainDone = true
+#define MAIN_DONE CONTROLLER.mainDone = true
+
+// allows user to specify a point to capture updated values
+#define SNAP CONTROLLER.update(std::source_location::current())

@@ -45,6 +45,7 @@ template <std::size_t N> class bitset : public std::bitset<N>, public base {
 
 public:
   void _vstd_rename(std::string name, SLOC) override {
+    if (bo->name == name) return;
     OP("rename bitset", op.comps.push_back(std::make_unique<vobj::RenameOp>(
                             bo, bo->name, name));)
   }

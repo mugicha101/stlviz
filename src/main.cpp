@@ -131,7 +131,11 @@ int main() {
   vstd::binary_tree<int>::NodeHandle node5 = bt.insertRight(node2, 5);
   bt.insertLeft(node4, 6);
 
-  MAIN_DONE();
+  vstd::vector<std::pair<int,int>> pairVec;
+  DEF(pairVec);
+  pairVec.push_back({6, 7});
+
+  MAIN_DONE;
 
   // _Exit(0);
 }

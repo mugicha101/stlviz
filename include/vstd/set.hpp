@@ -71,7 +71,9 @@ public:
        for (auto &p : bo->elements) idxs.push_back(p.first);
        std::sort(idxs.begin(), idxs.end(), std::greater<size_t>());
        for (size_t idx : idxs) bo->remove(op, idx);
-       op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));)
+       op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
+       bo->o = nullptr;
+    )
   }
 
   iterator begin() { return SUPER::begin(); }

@@ -1,0 +1,1 @@
+i should start at 0 not 1, as starting at 1 excludes element 0 from the sum.

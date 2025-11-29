@@ -1,0 +1,2 @@
+Doesn't include nodes own value in path passing through itself.
+maxPathSum = std::max(maxPathSum, leftChain + rightChain) should be maxPathSum = std::max(maxPathSum, leftChain + rightChain + val);

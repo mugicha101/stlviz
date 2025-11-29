@@ -58,6 +58,7 @@ namespace vstd {
       SLOC;
       if (!bo) return;
       OP(std::string(name()) + " destruction",
+        bo->o = nullptr;
         op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
       )
     }
