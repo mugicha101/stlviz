@@ -40,7 +40,7 @@ namespace vstd {
       std::cout << "PRIMITIVE WRAPPER INIT AT " << sloc.line() << std::endl;
       OP(std::string(name()) + " initialization",
         bo = vobj::create<BT>(v);
-        bo->o = (vstd::base *)this;
+        bo->setObj((vstd::base *)this);
         std::cout << "BO UID " << bo->uid << " MAPPED TO PRIMITIVE WRAPPER " << name() << std::endl;
         std::cout << bo.get() << " " << this << std::endl;
         op.comps.push_back(std::make_unique<vobj::ConstructOp>(bo, sloc));
@@ -51,14 +51,14 @@ namespace vstd {
     NumWrapper(NumWrapper &nw) : NumWrapper(nw.value, std::source_location::current()) {}
     NumWrapper(const NumWrapper &nw) : NumWrapper(nw.value, std::source_location::current()) {}
     NumWrapper(NumWrapper &&nw) : bo(nw.bo), value(nw.value) {
-      bo->o = this;
+      bo->setObj(this);
       nw.bo = nullptr; // prevent destructor from killing bo
     }
     ~NumWrapper() {
       SLOC;
       if (!bo) return;
       OP(std::string(name()) + " destruction",
-        bo->o = nullptr;
+        bo->setObj(nullptr);
         op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
       )
     }

@@ -24,7 +24,7 @@ class set : public std::set<T, Compare>, public base {
 
   void init_helper(std::source_location sloc) {
     OP("set initialization", bo = vobj::create<vobj::List<EBT>>();
-       bo->o = (vstd::base *)this;
+       bo->setObj((vstd::base *)this);
        op.comps.push_back(std::make_unique<vobj::ConstructOp>(bo, sloc));)
   }
 
@@ -72,7 +72,7 @@ public:
        std::sort(idxs.begin(), idxs.end(), std::greater<size_t>());
        for (size_t idx : idxs) bo->remove(op, idx);
        op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
-       bo->o = nullptr;
+       bo->setObj(nullptr);
     )
   }
 

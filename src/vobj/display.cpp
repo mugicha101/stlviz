@@ -30,6 +30,13 @@ namespace vobj {
     return font;
   }
 
+  void Display::setObj(vstd::base *o) {
+    this->o = o;
+    if (o) {
+      typeName = o->_vstd_type_name();
+    }
+  }
+
   bool Display::update(Operation &op) {
     if (localUpdateTick == globalUpdateTick) return updated;
     localUpdateTick = globalUpdateTick;

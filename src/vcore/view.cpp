@@ -18,39 +18,29 @@ namespace vcore {
 
     // "Vectors" tab - shows only vector displays
     tabs.emplace_back("Vectors", [](std::shared_ptr<vobj::Display> d) {
-      if (!d->o) return false;
-      std::string typeName = d->o->_vstd_type_name();
-      return typeName.find("vector") != std::string::npos;
+      return d->typeName.find("vector") != std::string::npos;
     });
 
     // "Stacks" tab
     tabs.emplace_back("Stacks", [](std::shared_ptr<vobj::Display> d) {
-      if (!d->o) return false;
-      std::string typeName = d->o->_vstd_type_name();
-      return typeName.find("stack") != std::string::npos;
+      return d->typeName.find("stack") != std::string::npos;
     });
 
     // "Deques" tab
     tabs.emplace_back("Deques", [](std::shared_ptr<vobj::Display> d) {
-      if (!d->o) return false;
-      std::string typeName = d->o->_vstd_type_name();
-      return typeName.find("deque") != std::string::npos;
+      return d->typeName.find("deque") != std::string::npos;
     });
 
     // "Trees" tab - shows tree and BST structures
     tabs.emplace_back("Trees", [](std::shared_ptr<vobj::Display> d) {
-      if (!d->o) return false;
-      std::string typeName = d->o->_vstd_type_name();
-      return typeName.find("tree") != std::string::npos ||
-             typeName.find("binary") != std::string::npos;
+      return d->typeName.find("tree") != std::string::npos ||
+             d->typeName.find("binary") != std::string::npos;
     });
 
     // "Sets" tab
     tabs.emplace_back("Sets", [](std::shared_ptr<vobj::Display> d) {
-      if (!d->o) return false;
-      std::string typeName = d->o->_vstd_type_name();
-      return typeName.find("set") != std::string::npos ||
-             typeName.find("bitset") != std::string::npos;
+      return d->typeName.find("set") != std::string::npos ||
+             d->typeName.find("bitset") != std::string::npos;
     });
   }
 

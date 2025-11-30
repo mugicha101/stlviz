@@ -46,7 +46,7 @@ template <typename T> class deque : public std::deque<T>, public base {
     std::cout << "DEQUE INIT AT " << sloc.line() << std::endl;
     OP(
         "deque initialization", bo = vobj::create<vobj::List<EBT>>();
-        bo->o = (vstd::base *)this;
+        bo->setObj((vstd::base *)this);
         std::cout << "BO UID " << bo->uid << " MAPPED TO DEQUE " << std::endl;
         op.comps.push_back(std::make_unique<vobj::ConstructOp>(bo, sloc));
         for (size_t i = 0; i < size(); ++i) {
@@ -94,8 +94,9 @@ public:
     OP("deque destruction",
       for (size_t i = 0; i < size(); ++i) {
         bo->remove(op, i);
-      } op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
-      bo->o = nullptr;
+      }
+      op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
+      bo->setObj(nullptr);
     )
   }
 

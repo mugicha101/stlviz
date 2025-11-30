@@ -60,7 +60,7 @@ namespace vstd {
       std::cout << "BINARY_TREE INIT AT " << sloc.line() << std::endl;
       OP("binary_tree initialization",
         treeDisplay = vobj::create<vobj::Tree<EBT>>();
-        treeDisplay->o = (vstd::base *)this;
+        treeDisplay->setObj((vstd::base *)this);
         std::cout << "BO UID " << treeDisplay->uid << " MAPPED TO BINARY_TREE" << std::endl;
         op.comps.push_back(std::make_unique<vobj::ConstructOp>(treeDisplay, sloc));
       )
@@ -136,7 +136,7 @@ namespace vstd {
         // Clear all nodes
         treeDisplay->clear(op);
         root = nullptr;
-        treeDisplay->o = nullptr;
+        treeDisplay->setObj(nullptr);
         op.comps.push_back(std::make_unique<vobj::DestroyOp>(treeDisplay));
       )
     }

@@ -33,7 +33,7 @@ template <std::size_t N> class bitset : public std::bitset<N>, public base {
   void init_helper(std::source_location sloc) {
     OP(
         "bitset initialization", bo = vobj::create<vobj::List<EBT>>();
-        bo->o = (vstd::base *)this;
+        bo->setObj((vstd::base *)this);
         op.comps.push_back(std::make_unique<vobj::ConstructOp>(bo, sloc));
         for (std::size_t i = 0; i < N; ++i) {
           auto e = vobj::create<EBT>(SUPER::test(i));
@@ -62,12 +62,15 @@ public:
 
   ~bitset() {
     SLOC;
-    OP("bitset destruction", std::vector<std::size_t> idxs;
-       idxs.reserve(bo->elements.size());
-       for (auto &p : bo->elements) idxs.push_back(p.first);
-       std::sort(idxs.begin(), idxs.end(), std::greater<std::size_t>());
-       for (std::size_t idx : idxs) bo->remove(op, idx);
-       op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));)
+    OP("bitset destruction",
+      std::vector<std::size_t> idxs;
+      idxs.reserve(bo->elements.size());
+      for (auto &p : bo->elements) idxs.push_back(p.first);
+      std::sort(idxs.begin(), idxs.end(), std::greater<std::size_t>());
+      for (std::size_t idx : idxs) bo->remove(op, idx);
+      op.comps.push_back(std::make_unique<vobj::DestroyOp>(bo));
+      bo->setObj(nullptr);
+    )
   }
 
   std::size_t size() const { return SUPER::size(); }

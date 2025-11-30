@@ -3,7 +3,7 @@
 
 namespace vobj {
   std::string genDefaultName(std::shared_ptr<vobj::Display> target, std::source_location sloc) {
-    return std::string(target->o ? target->o->_vstd_type_name() : "") + ":" + std::to_string(sloc.line()) + ":" + std::to_string(sloc.column());
+    return target->typeName + ":" + std::to_string(sloc.line()) + ":" + std::to_string(sloc.column());
   }
 
   void ConstructOp::apply() {

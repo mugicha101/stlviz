@@ -12,17 +12,33 @@ namespace vobj {
   template<typename T>
   struct AssignOp;
 
-  template<typename T>
+  template<typename T, typename Enable = void>
   struct ToString {
     static std::string apply(const T &val) {
       return std::to_string(val);
     }
   };
 
+  template<>
+  struct ToString<std::string> {
+    static std::string apply(const std::string &val) {
+      return val;
+    }
+  };
+
+  template<typename T>
+  struct ToString<T, std::enable_if_t<std::is_floating_point<T>::value>> {
+    static std::string apply(const T &val) {
+      std::ostringstream ss;
+      ss << std::setprecision(17) << std::defaultfloat << val;
+      return ss.str();
+    }
+  };
+
   template<typename A, typename B>
   struct ToString<std::pair<A,B>> {
     static std::string apply(const std::pair<A,B> &val) {
-      return std::to_string(val.first) + "," + std::to_string(val.second);
+      return ToString<A>::apply(val.first) + "," + ToString<B>::apply(val.second);
     }
   };
 

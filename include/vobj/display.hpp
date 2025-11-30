@@ -62,6 +62,7 @@ namespace vobj {
     std::string name; // name (set to init location by ConstructOp, can be modified with RenameOp)
     std::shared_ptr<Display> parent; // pointer to parent display, nullptr if none
     vstd::base *o = nullptr; // pointer to vstd object this display represents, nullptr if none (raw pointer due to vstd not being created as a smart ptr)
+    std::string typeName = ""; // type name of o
     sf::Vector2f pos; // position of element when it has no parent
     bool needInitPos = true; // flag that tells root display to assign an initial position
     int64_t priority = 0; // higher priority top level displays get prioritized during click and rendering
@@ -83,6 +84,8 @@ namespace vobj {
     FRIEND_CREATE
 
   public:
+
+    void setObj(vstd::base *o); // set o, updates typeName
 
     // rename this display, should only be done when at latest operation
     void rename(std::string name, std::source_location sloc);

@@ -139,10 +139,7 @@ namespace vobj {
     for (std::shared_ptr<Display> d : tlds) {
       if (d->needInitPos)
         continue;
-      std::string typeName;
-      if (d->o)
-        typeName = d->o->_vstd_type_name();
-      clusters[typeName].push_back(d);
+      clusters[d->typeName].push_back(d);
     }
 
     if (!newDisplays.empty()) {
@@ -150,11 +147,7 @@ namespace vobj {
       const float gridStep = 50.f;
 
       for (auto &nd : newDisplays) {
-        std::string typeName;
-        if (nd->o)
-          typeName = nd->o->_vstd_type_name();
-
-        auto it = clusters.find(typeName);
+        auto it = clusters.find(nd->typeName);
         if (it != clusters.end() && !it->second.empty()) {
           auto last = it->second.back();
           sf::IntRect lastBox = last->getBBox();
@@ -204,7 +197,7 @@ namespace vobj {
         }
 
         nd->needInitPos = false;
-        clusters[typeName].push_back(nd);
+        clusters[nd->typeName].push_back(nd);
       }
     }
     for (std::shared_ptr<Display> d : tlds) {
@@ -252,7 +245,7 @@ namespace vobj {
   }
 
   std::shared_ptr<Display> RootDisplay::at(sf::Vector2f worldPos) const {
-    auto tlds = topLevelDisplays();
+    auto tlds = displayFilter ? topLevelDisplays(displayFilter) : topLevelDisplays();
     for (auto it = tlds.rbegin(); it != tlds.rend(); ++it) {
       std::shared_ptr<Display> d = *it;
       sf::FloatRect bbox = static_cast<sf::FloatRect>(d->getBBox());
