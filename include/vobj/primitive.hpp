@@ -30,7 +30,7 @@ namespace vobj {
   struct ToString<T, std::enable_if_t<std::is_floating_point<T>::value>> {
     static std::string apply(const T &val) {
       std::ostringstream ss;
-      ss << std::setprecision(17) << std::defaultfloat << val;
+      ss << std::setprecision(6) << std::defaultfloat << val;
       return ss.str();
     }
   };
