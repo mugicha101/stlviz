@@ -4,6 +4,9 @@
 #include <iostream>
 #include <vcore/controller.hpp>
 
+const float MIN_ZOOM = 0.1f;
+const float MAX_ZOOM = 10.f;
+
 namespace vcore {
   Controller::Controller() : view(sf::VideoMode::getDesktopMode().size / 2u) {
     view.window.setFramerateLimit(60);
@@ -187,8 +190,9 @@ namespace vcore {
       }
     } else {
       sf::Vector2f mouseWorldPos = model.root->screen2world(mousePos);
-      float zoomFactor = pow(1.1f, -delta);
+      float zoomFactor = std::max(MIN_ZOOM / model.root->camZoom, std::min(MAX_ZOOM / model.root->camZoom, (float)pow(1.1f, -delta)));
       model.root->camZoom *= zoomFactor;
+      std::cout << model.root->camZoom << std::endl;
       sf::Vector2f newMouseWorldPos = model.root->screen2world(mousePos);
       model.root->camPosition += mouseWorldPos - newMouseWorldPos;
     }
