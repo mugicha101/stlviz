@@ -1,3 +1,5 @@
+# COMP 790 Submission materials are in ./COMP\ 790\ Submission/
+
 # CMake SFML Project Template
 
 This repository was forked from [CMake SFML Project Template](https://github.com/SFML/cmake-sfml-project.git), which provides basic support for building cross-platform SFML.
