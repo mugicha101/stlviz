@@ -31,7 +31,9 @@ Prerequisites:
 From the project root (`stlviz/`), build and run tests:
 
 `cmake -S . -B build_macos -DCMAKE_BUILD_TYPE=Release`
+
 `cmake --build build_macos --config Release`
+
 `ctest --verbose -C Release --test-dir build_macos`
 
 ## Installing
