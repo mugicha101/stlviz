@@ -2,7 +2,9 @@
 
 Team members are:
 Advait Parmar (730793244)
+
 Alex Yoshida (730508420)
+
 Sidharth Bankupalle (730827824)
 
 # CMake SFML Project Template
